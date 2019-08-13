@@ -291,6 +291,7 @@ alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-ti
 	-c 	统计字节数
 	-w  统计单词数
 	-l	统计行数
+	-m  统计字符数
 ```
 
 ### 6、多命令顺序执行
@@ -2437,6 +2438,27 @@ ID      Name    PHP     Linux   MySQL   Average
 1               82      95      86      87.66
 2       zczhao  74      96      87      85.66
 3               99      83      83      91.66
+```
+
+```shell
+# 只打印文件的第一行内容
+[root@localhost ~]# sed -n '1p' filename
+
+# 查看文件的第一行到第十行之间的内容
+[root@localhost ~]# sed -n '1,10p' filename
+
+# 删除第一行文本信息
+[root@localhost ~]# sed'1d' filename
+
+# 查看2019-08-06 22:43-22:44之间的日志记录
+[root@localhost ~]# sed -n '/2019-08-06 22:43/,/2019-08-06 22:44/p' filename
+
+# 将文本里面的某些字符串进行替换 格式：sed's/希望替换的内容/被替换的内容/g'
+# 将1替换为one
+[root@localhost ~]# sed 's/1/one /g' filename
+
+# 查看日志的第1-20行内容
+[root@localhost ~]# nl log.file | sed -n '1,10p'
 ```
 
 ## 三、字符串处理命令

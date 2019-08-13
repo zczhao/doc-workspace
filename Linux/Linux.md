@@ -674,6 +674,14 @@ cat 命令用来查看文件内容。这个命令的基本信息如下：
 
 ​	-v：	列出特殊字符
 
+```shell
+# 查看全部文本内容
+[root@localhost ~]# cat filename
+
+# 查看文本的中间某些行范围之间的内容,例如说查看文本文件100-120行之间的内容
+[root@localhost ~]# cat -n filename | tail -n +100 | head -n 20
+```
+
 ### 4、more 命令
 
 more 是分屏显示文件的命令，其基本信息如下：
@@ -776,6 +784,20 @@ head 命令显示文件文字区块，其基本信息如下：
 
 ​	-f：	监听文件的新增内容
 
+```shell
+# 实时监控日志
+[root@localhost ~]# tail -f filename
+
+# 实时监控10行日志信息
+[root@localhost ~]# tail -10f filename
+
+# 查看日志尾部的最后100行日志信息
+[root@localhost ~]# tail -n 100 filename
+
+# 查看日志100行之后的日志信息
+[root@localhost ~]# tail -n +100 filename
+```
+
 ### 8、ln 命令
 
 ln 命令的基本信息：
@@ -837,20 +859,21 @@ ln 命令的基本信息：
 软链接特性：
 
 - 软链接和硬链接文件拥有不同的Inode和Block
-
 - 两个文件修改任意一个，别一个都会改变
-
 - 删除软链接，源文件不受影响，删除源文件，软链接不能使用
-
 - 软链接没有实际数据，只保存源文件的Inode，不论源文件多大，软链接大小不变
-
 - 软链接的权限是最大权限lrwxrwxrwx，但由于没有实际数据，最终访问时需要参考源文件权限
-
 - 软链接可以链接目录
-
 - 软链接可以跨分区
-
 - 软链接特征明显，建议使用软链接
+
+### 9、tac 命令
+
+和cat命令有点相反，cat命令更多的是从头部往尾部的顺序展现文本内容，而tac命令正好是从文本的尾部往头部展现日志内容
+
+```shell
+[root@localhost ~]# rm [选项] 文件或目录
+```
 
 ## 四、目录和文件都能操作的命令
 
@@ -1623,6 +1646,46 @@ grep 命令用于在文件中搜索符合条件的字符串，如果需要模糊
 | [^]    | 逻辑非，表示匹配不是中括号内的一个字符。例如，`[^0-9]`代表匹配一个不是数字的字符 |
 | ^      | 匹配行首                                                     |
 | $      | 匹配行尾                                                     |
+
+```shell
+# 在多个文件中查找
+[root@localhost ~]# grep "match_pattern" file_1 file_2 file_3 ...
+
+# 标记匹配颜色 --color=auto 这里的color项可以根据文档说明进行选择always，never，auto三种
+[root@localhost ~]# grep "match_pattern" file_name --color=auto
+[root@localhost ~]# grep "match_pattern" file_name --color
+
+# 输出除之外的所有行 -v 选项
+[root@localhost ~]# grep -v "match_pattern" file_name
+
+# 使用正则表达式 -E 选项
+[root@localhost ~]# grep -E "[1-9]+"
+
+#只输出匹配到的内容选项
+[root@localhost ~]# grep -o -E "[a-z]+." line
+
+# 统计文件或者文本中包含匹配字符串的行数 -c 选项
+[root@localhost ~]# grep -c "text" file_name
+
+# 输出包含匹配字符串的行数 -n 选项
+[root@localhost ~]# grep"text" -n file_name
+
+# 查看2019-08-06 22点这一个小时以内的日志信息
+[root@localhost ~]# grep'2019-08-06 22' filename
+
+# 设定每一页展示10条数据信息
+[root@localhost ~]# more -10 filename
+
+# 查看日志最后一次出现关键字'test'的日志记录
+[root@localhost ~]# grep'test' -A 10 log.file | tail -n 11
+# grep "name" -A 10 显示匹配内容和后面的10行
+# grep "name" -B 10 显示匹配内容和前面的10行
+# grep "name" -C 10 显示匹配内容和前后面的10行
+
+# 统计一份日志里面出现‘test’关键字的行数
+[root@localhost ~]# grep "test" filename | wc -l
+
+```
 
 #### 6、管道符
 
