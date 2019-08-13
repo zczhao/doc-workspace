@@ -1668,23 +1668,22 @@ grep 命令用于在文件中搜索符合条件的字符串，如果需要模糊
 [root@localhost ~]# grep -c "text" file_name
 
 # 输出包含匹配字符串的行数 -n 选项
-[root@localhost ~]# grep"text" -n file_name
+[root@localhost ~]# grep "text" -n file_name
 
 # 查看2019-08-06 22点这一个小时以内的日志信息
-[root@localhost ~]# grep'2019-08-06 22' filename
+[root@localhost ~]# grep "2019-08-06 22" filename
 
 # 设定每一页展示10条数据信息
 [root@localhost ~]# more -10 filename
 
 # 查看日志最后一次出现关键字'test'的日志记录
-[root@localhost ~]# grep'test' -A 10 log.file | tail -n 11
+[root@localhost ~]# grep "test" -A 10 log.file | tail -n 11
 # grep "name" -A 10 显示匹配内容和后面的10行
 # grep "name" -B 10 显示匹配内容和前面的10行
 # grep "name" -C 10 显示匹配内容和前后面的10行
 
 # 统计一份日志里面出现‘test’关键字的行数
 [root@localhost ~]# grep "test" filename | wc -l
-
 ```
 
 #### 6、管道符
