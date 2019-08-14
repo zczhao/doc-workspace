@@ -220,3 +220,315 @@ Evaluate Expression (Alt + F8) 。可以使用这个操作在调试过程中计�
 ![图9.1](./images/856154-20170905213656241-1998475384.png)
 
 ![图9.2](./images/856154-20170905214031397-1943297392.png)
+
+# 快捷键对应描述
+
+```
+窗口切换到上一个：Previous Project Window
+窗口切换到下一个：Next Project Window
+
+查找最近打开的文件或窗口：Recent Files
+查找最近修改的文件：Recent Changed Files
+查找最近修改：Recent Changes
+
+光标定位到上一次修改的地方：Last Edit Location
+光标定位到下一次修改的地方：Next Edit Location
+
+上一个光标的地方：Back
+下一下光标的地方：Forwoard
+添加到收藏夹：Add to Favorites
+添加取消断点：Toggle Line Breakpoints
+书签：Bookmarts
+收藏夹：Favorites
+
+选择所有相同的内容：Select All Occurrences
+选择下相同的内容：Add Selection for Next Occurrence
+选择下一个选中的内容：Find Next / Move to Next Occurrence
+选择上一个选中的内容：Find Previous / Move to Previous Occurrence
+列选择模式：Column Selection Mode
+取消选中：Unselect Occurrence
+
+方法、代码上移：Move Statement Up
+方法、代码下移：Move Statement Down
+把光标所在行代码向上移一行：Move Line Up
+把光标所在行代码向下移一行：Move Line Down
+移动元素到左：Move Element Left
+移动元素到右：Move Element Right
+向上选中行：Up with Selection
+向下选中行：Down with Selection
+向左选中一个字符：Left with Selection
+从光标处选中前一个单词：Move Caret to Previous Word with Selection
+向右选中一个字符：Right with Selection
+从光标处选中后一个单词：Move Caret to Next Word with Selection
+光标移动到行首：Move Caret to Line Start
+从光标处选中到行首：Move Caret to Line Start with Selection
+光标移动到行尾：Move Caret to Line End
+从光标处选中到行尾：Move Caret to Line End with Selection
+递进式取消选择代码块。可选中光标所在的单词或段落，连续按会在原有选中的基础上再扩展取消选中范围：Extend Selection
+
+大小写转换：Toggle Case
+删除行：Delete Line
+从光标处删除到行首：Delete  to Line Start
+从光标处删除到行尾：Delete  to Line End
+
+格式化代码：Reformat Code
+弹出格式化弹框：Show Reformat File Dialog
+自动删除无用的导入包：Optimize Imports
+
+自动缩进：Auto-Indent Lines
+多行注释：Comment with Block Comment
+单行注释：Comment with Line Comment
+全局替换：Replace in Path...
+
+跳转到实现类：Implementations(s)
+跳转到方法或类定义处：Declaration
+跳转到上一个方法：Previous Method
+跳转到下一个方法：Next Method
+跳转到行/列：Line/Column
+
+实现接口定义的方法：Implement methods
+重写覆盖方法：Override Methods
+实现方法跳转到接口定义处：Super Methods
+实现接口里的方法：Implement Methods...
+生成代码：Generate…
+生成包围方法( 选中的代码快速添加)：if/while/for/try-catch：Surround With...
+取消生成包围方法：Unwarp/Remove
+
+Completion 自动完成代码
+    代码提示：Basic
+    智能选择并实现：SmartType
+    循环往上选择单词：Cyclic Expand Word
+    循环往下选择单词：Cyclic Expand Word (Backwrad)
+    选择Live Templates模板：Insert Live Template
+    选择Live Templates模板：Surround  with Live Template
+
+Folding 折叠
+    方法展开：Expand
+    方法折叠：Collapse
+    同上，方法展开：Expand Recursively
+    同上，方法折叠：Collapse Recursively
+    全部方法展开：Expand All
+    全部方法折叠：Collapse All
+    展开Java doc注释：Expand doc comments
+    折叠Java doc注释：Collapse doc comments
+    选中代码折叠/展开：Fold Selection/Remove region
+    折叠代码块：Fold code Block
+    
+显示类或方法使用情况：Show Usages
+查找类或方法使用情况：Find Usages
+查找选中的代码在当前文件中使用情况：Find Usages In File
+高亮显示所有该选中的文本：Highlight Usages in File
+查看类继承关系：Type Hierarchy
+显示类结构：Structure
+显示类中所有方法：File Structure...
+查看方法调用层次：Call Hierarchy
+新建文件或类：New...
+行尾加分号：Complete Current Statement
+选中关键词向下查找：Find word at Caret  可使用查找后，使用Command+G(向下) Command+Shift+G(向上)
+
+查找字符串：Find in Path...
+查找类：Class...
+查找文件：File...
+查找符号：Symbol...
+查找任何文件：Search everywhere
+
+
+重构变量/修改变量名：Rename reference
+重构方法/修改方法名增加参数：Change Signature...
+选中文件重命名：Rename...
+打开文件光标在文件中：Rename File...
+
+显示错误信息：Error Description
+切换视图：Change View…
+
+切换为前一个Tab：Select Previous Tab
+切换为后一个Tab：Select Next Tab
+
+水平(左右)窗口：Split vertically 水平(左右)  / Move Right
+垂直(上下)窗口： Split Horizontally / Move Down
+
+关闭窗口：Close
+关闭所有窗口：Close All
+关闭左侧的窗口：Close All to the Left
+关闭右侧的窗口：Close All to the Right
+关闭激活的窗口：Close Active Tab
+关闭其他的窗口：Close Others
+
+Favorites窗口：Favorites
+书签：Toggle Bookmark
+显示Bookmark列表：Show Bookmarks
+带有标记的书签：Toggle Bookmark with Mnemonic
+跳转到标记：Go to Bookmark 
+收藏文件/方法：Add to Favorites
+
+显示所有断点：View Breakpoint...
+添加/取消断点：Toggle Line Breakpoint
+禁用/启动断点：Toggle Breakpoint Enabled
+
+光标上一行新建一行光标跳到新建行：Start New Line Before Current
+光标下一行新建一行光标跳到新建行：Start New Line
+分隔行：Split Line
+合并行：Join Lines
+抽取代码块为方法：Method...
+跳到光标最近的括号前：Move Caret to Code Block Start
+跳到光标最近的括号后：Move Caret to Code Block End
+
+显示最近复制的内容,剪切板：Paste from History...
+模板找内容：Search Structurally...
+向左/右/上/下拉动窗口的大小：Stretch to Left/Right/Top/Bottom
+
+打开Intellij IDEA系统设置：Settings...
+打开当前项目结构设置：Project Structure...
+打开全局设置：Setting for New Projects...
+打开全局项目结构设置：Structure for new Projects...
+复制文件路径：Copy Paths
+隐藏显示的工具窗口：Hide Active Tool Window
+回到前一个工具窗口：Jump to Last Tool Window
+光标回到编辑区：Switch Focus To Editor
+
+快速跳转到类、变量定义处：Jump to Source
+查看类、方法、属性注释：Quick Documentation
+查看方法，类、变量的定义：Quick Definition
+查看参数信息：Parameter Info
+方法参数提示：Parameter... 
+
+启动服务：Run...
+Debug启动服务：Debug...
+停止服务：Stop 'xxx'
+
+编辑器最大化(隐藏所有工具窗口)：Hide ALl Tool WIndows
+演出模式：Presentation Mode
+退出演出模式：Exit Presentation Mode
+选择最近的的项目打开：Open Recent...
+```
+
+# 常用配置
+
+1、隐藏不必要的文件
+
+```
+# 如隐藏.idea、*.iml
+Preferences>Editor > File Types 最下面的Ignore files and folders 加上 .idea;*.iml;
+```
+
+2、自动导包 
+
+```
+ Preferences->Editor->General->Auto Import:
+     Add unambiguous imports on the fly
+     Optimize imports on the fly(for current project)
+```
+
+3、提示忽略大小写
+
+```
+Settings->Editor->General->Code Completion
+  Match case 取消勾选
+```
+
+4、导包
+
+```
+导入的某个包下的类超过设置的，就会换成*号来代替
+Preferences>Editor>Code Style>Java:
+     Imports:
+     Class count to use import with "*"  9999
+     Names count to use static import with "*” 9999
+```
+
+5、注释紧贴代码前
+
+```
+Preferences>Editor>Code Style>Java
+    Code Generation: (取消选中)
+        Line comment at first column  
+        Block comment at first column
+```
+
+6、每个方法显示方法分隔线
+
+```
+Preferences>Editor>General >Appearance:
+     Show method separators 显示方法分隔线
+     Show Whitespaces 显示空格和制表符(tab)
+```
+
+7、去掉编码区域的竖线
+
+```
+Preferences->Editor->General->Appearance:
+    Show hard wrap guide(configured in Code Style options)
+```
+
+8、svn 文件修改后，文件夹路径也变为蓝色
+
+```
+ Preferences->Version Control:
+    Show directories with changed descendants 
+```
+
+9、html style 属性显示完整
+
+```
+Preferences->Editor->General->Code Folding:
+    HTML ’style’ attribute    
+```
+
+10、取消默认打开的项目工程
+
+```
+ Preferences>Apperance & Behavior>System Settings
+	取消勾选 Reopen last project on startup
+```
+
+
+
+# 技巧，使用问题记录
+
+1、MAC更换新版Tomcat后:启动Tomcat:Permission denied
+
+```
+cd apache-tomcat-x.x.x/bin
+chmod u+x *.sh
+```
+
+2、svn/git提交
+
+```
+使用git/svn提交代码时，点击commit之后卡死在Performing code Analysis，或者Performing code Analysis结束后没有进入下一步操作
+把右侧的”Perform code Analysis”和”Check TODO”复选框前面的勾去掉就好了
+```
+
+3、使用Rest Client，开发时用来模拟http请求
+
+```
+Tools->Test RESTFul Web Service
+```
+
+4、自动展开目录和定位打开文件位置
+
+```
+从Project左边栏的龄轮上选择Autoscroll to Source和 Autoscroll from Sources都勾选上
+```
+
+5、使用自带代码检查功能
+
+```
+Analyze->Inspect Code…
+```
+
+6、Maven添加jar包
+
+```
+在pom.xml中 Find Action…->Generate…->Dependency->输入加添加的jar包名字
+```
+
+7、Maven配置
+
+```
+ Settings->Build,Execution,Deployment->Build Tools->Maven
+    pom文件修改后自动导入包
+    Settings->Build,Execution,Deployment->Build Tools->Maven->Importing
+        Import Maven projects automatically
+```
+
