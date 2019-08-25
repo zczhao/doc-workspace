@@ -432,7 +432,7 @@ OPTIONS说明(常用)：
 #### 10.2、查看容器日志
 
 ```shell
-docker logs -f -t --tail 容器id
+docker logs -f -t --tail 容器id/容器name
 -t：是加入时间戳
 -f：跟随最新的日志打印
 --tail 数字：最示最后多少条
