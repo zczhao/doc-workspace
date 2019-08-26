@@ -1255,7 +1255,7 @@ Mon Aug 19 21:23:55 CST 2019
 #### 3.1、使用mysql镜像
 
 ```shell
-[root@localhost ~]# docker run -p 12345:3306 --name mysql -v /mydocker/mysql/conf/my.cnf:/etc/mysql/conf.d -v /mydocker/mysql/logs:/logs -v /mydocker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+[root@localhost ~]# docker run -p 12345:3306 --name mysql -v /mydocker/mysql/conf/my.cnf:/etc/mysql/conf.d -v /mydocker/mysql/logs:/logs -v /mydocker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 命令说明：
 -p 12345:3306	将主机的12345端口映射到docker容器的3306端口
 --name mysql	运行服务名字
