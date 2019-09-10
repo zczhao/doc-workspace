@@ -176,6 +176,8 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
+可能会报错：x509: certificate has expired or is not yet valid 请搜索文档解决办法
+
 run 干了什么？
 
 ```mermaid
