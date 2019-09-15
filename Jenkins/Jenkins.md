@@ -96,7 +96,7 @@ export PATH=$PATH:$MAVEN_HOME/bin
 
 
 
-# 四、Jenkins+SVN环境搭建
+# 四、Jenkins+SVN持续集成环境搭建
 
 ## 1、系统结构总述
 
@@ -417,4 +417,74 @@ public class Apple {
 如果发生Jenkins服务器从SVN服务器下载代码不是最新版的情况，那么就在SVN服务器的URL地址后面加上@HEAD强制要求下载最新版
 
 ![](./images/2019-09-15_013058.png)
+
+# 五、Jenkins+GitHub持续集成环境搭建
+
+## 1、要点
+
+Jenkins与Github配合实现持续集成需要注意以下几点：
+
+1. Jenkins要部署到外网上，因为内网地址Github是无法访问的。这一点可以通过阿里云等平台提供的云服务实现。
+2. Jenkins所在的主机上需要安装Git，通过Git程序从GitHub上clone代码
+3. 在Jenkins内需要指定Git程序位置，和指定JDK、Maven程序位置非常类似
+4. 在Github上使用每个repository的WebHook方式远程触发Jenkins构建
+5. 在Jenkins内关闭"防止跨站点请求伪造"
+
+## 2、Linux环境下安装Gig
+
+### 2.1、安装编译Git里需要的包
+
+```shell
+yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+yum install -y perl-ExtUtils-MakeMaker
+```
+
+### 2.2、删除已有的Git
+
+```shell
+yum remove git
+```
+
+### 2.3、Git官网下载Git最新版tar包，移动到/url/src目录
+
+```shell
+cd /usr/src
+tar -zxvf git-2.9.3.tar.gz
+```
+
+### 2.4、编译安装
+
+```shell
+cd git-2.9.3
+make prefix=/usr/local/git all
+make prefix=/usr/local/git install
+echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
+source /etc/bashrc
+```
+
+### 2.5、检查一下版本号
+
+```shell
+git --version
+```
+
+## 3、在Jenkins中指定Git程序位置
+
+位置：系统管理  ->  全局工具配置(Manage Jenkins -> Global Tool Configure)
+
+![](./images/20190915230116.png)
+
+![](./images/20190915230028.png)
+
+## 4、Github上添加Webhook
+
+![](./images/20190915230505.png)
+
+## 5、在Jenkins内关闭"防止跨站点请求伪造"
+
+系统管理  ->  全局安全配置(Manage Jenkins -> Configure Global Security)
+
+![](./images/20190915230939.png)
+
+![](./images/20190915231018.png)
 
