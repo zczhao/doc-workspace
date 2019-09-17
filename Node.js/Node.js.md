@@ -21,6 +21,8 @@ https://github.com/git/git
 [root@localhost ~]# vim /etc/profile
 PATH=$PATH:/usr/local/git/bin
 export PATH
+# 刷新环境变量
+[root@localhost ~]# source /etc/profile
 # 查看安装的git版本
 [root@localhost ~]# git --version
 ```
@@ -88,7 +90,7 @@ nvm cache clear                     清空nvm的cache
 [root@localhost nvm]# npm config -g set registry https://registry.npm.taobao.org
 ```
 
-# 环境变量
+# Windows环境变量
 
 ## 一、Path配置
 
@@ -177,6 +179,17 @@ c:\Apache24\htdocs>bower install jquery --save
 ```
 
 会自动下载jQuery到bower_components文件夹中
+
+虚拟机可能会遇到的问题：
+
+```shell
+bower CERT_NOT_YET_VALID      Request to https://registry.bower.io/packages/search/vue failed: certificate is not yet valid
+
+# 需要同步系统时间
+[root@localhost ~]# ntpdate cn.pool.ntp.org
+```
+
+
 
 ### 2、安装jQuery其他版本
 

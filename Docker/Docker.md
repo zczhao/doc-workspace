@@ -176,7 +176,7 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
-可能会报错：x509: certificate has expired or is not yet valid 请搜索文档解决办法
+可能会报错：[x509: certificate has expired or is not yet valid](#2、从docker hub上(阿里云加速器)拉取mysql镜像到本地标签为5.7) 
 
 run 干了什么？
 

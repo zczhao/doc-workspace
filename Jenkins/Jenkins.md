@@ -430,7 +430,7 @@ Jenkins与Github配合实现持续集成需要注意以下几点：
 4. 在Github上使用每个repository的WebHook方式远程触发Jenkins构建
 5. 在Jenkins内关闭"防止跨站点请求伪造"
 
-## 2、Linux环境下安装Gig
+## 2、Linux环境下安装Git
 
 ### 2.1、安装编译Git里需要的包
 
