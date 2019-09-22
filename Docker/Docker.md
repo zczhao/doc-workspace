@@ -94,7 +94,97 @@ Docker使用EPEL发布，RHEL系的OS首先要确保已经持有EPEL仓库，否
 
 ## 4、CentOS7.x安装
 
+在centos7上安装docker，官网有比较详细的说明：
+
+```shell
 https://docs.docker.com/install/linux/docker-ce/centos/
+```
+
+### 4.1、docker要求Centos系统的内核版本高于3.10，检查操作系统版本
+
+```shell
+[root@localhost ~]# uname -r
+3.10.0-1062.el7.x86_64
+```
+
+### 4.2、下载docker的rpm包
+
+```
+https://download.docker.com/linux/centos/7/x86_64/stable/Packages/
+# 本次下载的包为：docker-ce-19.03.2-3.el7.x86_64.rpm
+```
+
+### 4.3、删除老版本docker
+
+```shell
+yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-selinux \
+                  docker-engine-selinux \
+                  docker-engine
+```
+
+### 4.4、添加yum源
+
+ 在 Centos7 中使用阿里云的yum源 
+
+```shell
+# 1、备份原来的yum源
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+
+# 2、下载阿里云的CentOS-Base.repo 到/etc/yum.repos.d/
+[root@localhost ~]# wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+# 或者
+[root@localhost ~]# mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+
+# 3、清理缓存
+[root@localhost ~]# sudo yum clean all
+
+# 4、生成新的缓存
+[root@localhost ~]# sudo yum makecache
+```
+
+添加docker源
+
+```shell
+[root@localhost ~]# yum update
+[root@localhost ~]# yum -y install yum-utils 
+[root@localhost ~]# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+```
+
+### 4.5、安装
+
+```shell
+# docker安装包名为：docker-ce-19.03.2-3.el7.x86_64.rpm
+# 安装包的存储目录为： /root
+[root@localhost ~]# yum install -y /root/docker-ce-19.03.2-3.el7.x86_64.rpm
+```
+
+### 4.6、检查是否安装成功
+
+```shell
+[root@localhost ~]# docker version
+```
+
+### 4.7、配置镜像加速器
+
+```shell
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://awclrbku.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+
 
 # 三、HelloWorld
 

@@ -1,23 +1,4 @@
-# 一、修改Centos默认yum源为国内镜像
-
-```shell
-# CentOS7
-[root@localhost ~]# wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-# CentOS6
-[root@localhost ~]# wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-```
-
-# 二、Centos yum安装epel源
-
-```shell
-# epel(RHEL 7)
-[root@localhost ~]# wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
- 
-# epel(RHEL 6)
-[root@localhost ~]# wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-6.repo
-```
-
-# 三、GitLab yum安装
+# GitLab yum安装
 
 ## 1、yum安装GitLab
 
