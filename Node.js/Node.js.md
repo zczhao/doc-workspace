@@ -130,14 +130,14 @@ npm config get registry
 
 ## 一、安装
 
-```
-npm install -g bower
+```shell
+[root@localhost ~]# npm install -g bower
 ```
 
 ## 二、构建项目
 
-```
-c:\Apache24\htdocs>bower init
+```shell
+[root@localhost ~]# bower init --allow-root
 ? name angular_001
 ? description first angular project
 ? main file
@@ -174,8 +174,8 @@ c:\Apache24\htdocs>bower init
 
 ### 1、安装jQuery
 
-```
-c:\Apache24\htdocs>bower install jquery --save
+```shell
+[root@localhost ~]# bower install jquery --save
 ```
 
 会自动下载jQuery到bower_components文件夹中
