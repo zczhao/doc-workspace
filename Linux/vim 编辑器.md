@@ -322,8 +322,11 @@ set pastetoggle=<F2>
 
 " 一些方便的映射
 let mapleader=','
-" 使用 leader+w 直接保存
+" 使用 leader+w 直接保存(需要在编辑模式下,使用 ',+w' 可实现保存)
 inoremap <leader>w <Esc>:w<cr>
+" 需要在正常模式下，使用',+Shift+w'可实现保存
+noremap <leader>W :w<cr>
+
 " 使用 jj 进入 normal 模式
 inoremap jj <Esc>
 
@@ -928,5 +931,31 @@ o		 运算符模式
 !		 插入模式，命令行模式
 i		 插入模式
 c		 命令模式
+```
+
+## 四、安装插件
+
+### 1、安装emmet插件
+
+```shell
+# 在~/.vim手动创建plugin目录，这是将来存放插件的目录
+[root@localhost ~]# cd ~/.vim
+[root@localhost .vim]# mkdir plugin
+
+# 创建bundle目录
+[root@localhost .vim]# mdkir -p ~/.vim/bundle
+# 进入.vim的bundle目录
+[root@localhost .vim]# cd ~/.vim/bundle
+# 下载插件
+[root@localhost bundle]# git clone https://github.com/mattn/emmet-vim.git
+# 进入下载好的目录
+[root@localhost bundle]# cd emmet-vim
+# 将下载好插件部分内容复制到vim的插件目录和自动加载目录
+[root@localhost emmet-vim]# cp ~/.vim/bundle/emmet-vim/plugin/emmet.vim ~/.vim/plugin/
+[root@localhost emmet-vim]# cp ~/.vim/bundle/emmet-vim/autoload/emmet.vim ~/.vim/autoload/
+[root@localhost emmet-vim]# cp -a ~/.vim/bundle/emmet-vim/autoload/emmet ~/.vim/autoload/
+# 在/etc/vimrc最末尾添加以下内容(设置使用ctrl+e 键来快速构建代码)
+[root@localhost emmet-vim]# vim /etc/vimrc
+let g:user_emmet_expandabbr_key = '<C-e>'
 ```
 
