@@ -276,6 +276,222 @@ Email地址： fhqfndn@gmail.com
 
 ![](./images/TIM截图20190528230709.png)
 
+## 2、案例实现
+
+### 2.1、本地库初始化
+
+```shell
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace
+$ mkdir demo
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace
+$ cd demo
+
+# 本地库初始化
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git init
+已初始化空的 Git 仓库于 /cygdrive/c/workspace/git-workspace/demo/.git/
+```
+
+### 2.2、新建文件
+
+```shell
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ vim bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ cat bash_demo.txt
+第一天产品经理需求完成bash demo
+```
+
+### 2.3、查看本地库状态
+
+```shell
+# 查看状态
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+
+尚无提交
+
+未跟踪的文件:
+  （使用 "git add <文件>..." 以包含要提交的内容）
+
+        bash_demo.txt
+
+提交为空，但是存在尚未跟踪的文件（使用 "git add" 建立跟踪）
+```
+
+### 2.4、把文件加入暂存区
+
+```shell
+# 加入暂存区
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git add bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+
+尚无提交
+
+要提交的变更：
+  （使用 "git rm --cached <文件>..." 以取消暂存）
+
+        新文件：   bash_demo.txt
+```
+
+### 2.5、提交到本地仓库
+
+```shell
+# 提交到本地仓库
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git commit -m "bash first commit"
+[master（根提交） 59efbf4] bash first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 bash_demo.txt
+ 
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+无文件要提交，干净的工作区
+```
+
+### 2.6、从暂存区取消暂存
+
+```shell
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ vim bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ cat bash_demo.txt
+第一天产品经理需求完成bash demo，产品经理临时变更需求
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git add bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+要提交的变更：
+  （使用 "git reset HEAD <文件>..." 以取消暂存）
+
+        修改：     bash_demo.txt
+        
+# 取消暂存        
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git reset HEAD bash_demo.txt
+重置后取消暂存的变更：
+M       bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ cat bash_demo.txt
+第一天产品经理需求完成bash demo，产品经理临时变更需求
+
+# 文件内容回退到当前最新版本
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git checkout -- bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ cat bash_demo.txt
+第一天产品经理需求完成bash demo
+```
+
+### 2.7、回滚到某一版本
+
+```shell
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ vim bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ cat bash_demo.txt
+第一天产品经理需求完成bash demo
+第二天产品经理需求完成bash demo
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git add bash_demo.txt
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git commit -m "second commit"
+[master b3fd83f] second commit
+ 1 file changed, 1 insertion(+)
+
+# 查看提交记录
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git log
+commit b3fd83f4158cd055c35d673aeebe9d4217d6b434 (HEAD -> master)
+Author: zczhao <fhqfndn@gmail.com>
+Date:   Sun Oct 13 18:53:58 2019 +0800
+
+    second commit
+
+commit 59efbf4842b23ae002424b682bc2dc58600a88cc
+Author: zczhao <fhqfndn@gmail.com>
+Date:   Sun Oct 13 18:45:20 2019 +0800
+
+    bash first commit
+
+# 回退到某一版本
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git reset --hard 59efbf4842b23ae002424b682bc2dc58600a88cc
+HEAD 现在位于 59efbf4 bash first commit
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+无文件要提交，干净的工作区
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ cat bash_demo.txt
+第一天产品经理需求完成bash demo
+```
+
+### 2.8、从本地库删除文件
+
+```shell
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+无文件要提交，干净的工作区
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ ll
+总用量 1
+-rw-rw-r--+ 1 Administrator None 43 10月 13 18:56 bash_demo.txt
+
+# 本地库删除文件
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git rm bash_demo.txt
+rm 'bash_demo.txt'
+
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+要提交的变更：
+  （使用 "git reset HEAD <文件>..." 以取消暂存）
+
+        删除：     bash_demo.txt
+
+# 提交到本地仓库
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git commit -m "delete bash demo"
+[master 861d679] delete bash demo
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 bash_demo.txt
+ 
+Administrator@DESKTOP-MNL9I3U /cygdrive/c/workspace/git-workspace/demo
+$ git status
+位于分支 master
+无文件要提交，干净的工作区
+```
+
 # 五、Git基本原理
 
 ## 1、哈希
@@ -483,24 +699,34 @@ git pull  [远程库地址别名] [远程分支名]
 
 - 进入当前用户的家目录
 
-$ cd ~ 
+  ```shell
+  $ cd ~ 
+  ```
 
 - 删除.ssh目录
 
-$ rm -rf .ssh
+  ```shell
+  $ rm -rf .ssh
+  ```
 
 - 运行命令生成.ssh密钥目录
 
-$ ssh-keygen -t rsa -C fhqfndn@gmail.com
+  ```shell
+  $ ssh-keygen -t rsa -C "fhqfndn@gmail.com"
+  ```
 
 - 进入.ssh目录查看文件列表
 
-$ cd .ssh
-$ ls -lF
+  ```shell
+  $ cd .ssh
+  $ ls -lF
+  ```
 
 - 查看id_rsa.pub文件内容
 
-$ cat id_rsa.pub
+  ```shell
+  $ cat id_rsa.pub
+  ```
 
 - 复制id_rsa.pub文件内容，登录GitHub。点击用户头像->Settings->SSH and GPG Kys
 
@@ -508,9 +734,17 @@ $ cat id_rsa.pub
 
 - 输入复制的密钥信息
 
+- 验证是否成功
+
+  ```shell
+  $ ssh -T git@github.com
+  ```
+
 - 回到GitHub创建远程地址别名
 
-git remote add origin_ssh git@github.com:zczhao/huashan.git
+  ```shell
+  $ git remote add origin_ssh git@github.com:zczhao/huashan.git
+  ```
 
 - 推送文件进行测试
 
@@ -523,6 +757,586 @@ git remote add origin_ssh git@github.com:zczhao/huashan.git
 ![](./images/TIM截图20190611234641.png)
 
 ![](./images/TIM截图20190611235044.png)
+
+## 11、案例实现
+
+### 11.1、创建远程库
+
+参上本章实现
+
+### 11.2、本地创建新的仓库并推送到远程仓库
+
+```shell
+$ echo "# demo" >> README.md
+$ git init
+# 创建本地仓库 $ git --git-dir=demo.git init --bare
+$ git add README.md
+$ git commit -m "first commit"
+$ git remote add origin https://github.com/zczhao/demo.git
+$ git push -u origin master
+```
+
+### 11.3、基于本地已有仓库推送到远程仓库
+
+```shell
+$ git remote add origin https://github.com/zczhao/demo.git
+# 首次推送到远程仓库
+$ git push -u origin master
+# 后续推送到远程仓库
+$ git push
+```
+
+### 11.4、克隆仓库
+
+```shell
+$ git clone https://github.com/zczhao/demo.git
+# 推送到远程仓库
+$ git push
+```
+
+### 11.5、标签管理
+
+```shell
+# 查看所有标签
+$ git tag
+# 查看远程标签
+$ git tag -r
+# 创建标签
+$ git tag name
+# 指定提交信息
+$ git tag -a name -m "comment"
+# 删除标签
+$ git tag -d name
+# 标签发布到远程
+$ git push origin name
+# 删除远程仓库标签
+$ git push origin :name
+```
+
+### 11.6、分支管理
+
+```shell
+# 查看分支
+$ git branch [-v]
+# 查看远程分支
+$ git branch -r
+# 创建分支
+$ git branch name
+# 切换分支
+$ git checkout name
+# 合并分支
+$ git merge name
+# 提交分支到远程
+$ git push origin name
+# 删除分支
+$ git branch -d name
+# 删除远程分支
+$ git push origin :name
+```
+
+### 11.7、子模块
+
+#### 1、创建Git Submodule测试项目
+
+##### 1.1、准备环境
+
+```shell
+$ pwd
+/cygdrive/c/workspace/git-workspace/
+$ mkdir -p submd/repos
+
+# 创建需要的本地仓库
+$ cd submd/repos
+$ git --git-dir=lib1.git init --bare
+$ git --git-dir=lib2.git init --bare
+$ git --git-dir=project1.git init --bare
+$ git --git-dir=project2.git init --bare
+$ ll
+drwxrwxr-x+ 1 Administrator None 0 10月 13 23:12 lib1.git/
+drwxrwxr-x+ 1 Administrator None 0 10月 13 23:12 lib2.git/
+drwxrwxr-x+ 1 Administrator None 0 10月 13 23:13 project1.git/
+drwxrwxr-x+ 1 Administrator None 0 10月 13 23:13 project2.git/
+
+# 初始化工作区
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd
+$ mkdir ws
+```
+
+##### 1.2、初始化项目
+
+```shell
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+# 初始化project1
+$ git clone ../repos/project1.git
+$ cd project1
+$ echo "project1" > project-info.txt
+$ git add project-info.txt
+$ git commit -m "init project1"
+$ git push origin master
+
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+# 初始化project2
+$ git clone ../repos/project2.git
+$ cd project2
+$ echo "project2" > project-info.txt
+$ git add project-info.txt
+$ git commit -m "init project2"
+$ git push origin master
+```
+
+##### 1.3、初始化公共类库
+
+```shell
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+# 初始化公共类库lib1
+$ git clone ../repos/lib1.git
+$ cd lib1
+$ echo "I'm lib1." > lib1-features
+$ git add lib1-features
+$ git commit -m "init lib1"
+$ git push origin master
+
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+# 初始化公共类库lib2
+$ git clone ../repos/lib2.git
+$ cd lib2
+$ echo "I'm lib2." > lib2-features
+$ git add lib2-features
+$ git commit -m "init lib2"
+$ git push origin master
+```
+
+#### 2、为主项目添加Submodules
+
+##### 2.1、为project1添加lib1和lib2
+
+```shell
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+$ cd project1
+$ ls
+project-info.txt
+$ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib1.git libs/lib1
+$ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib2.git libs/lib2
+$ ls
+libs/ project-info.txt
+$ ls libs
+lib1/  lib2/
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+要提交的变更：
+  （使用 "git reset HEAD <文件>..." 以取消暂存）
+
+        新文件：   .gitmodules
+        新文件：   libs/lib1
+        新文件：   libs/lib2
+# 查看一下公共类库的内容
+$ cat libs/lib1/lib1-features
+I'm lib1.
+$ cat libs/lib2/lib2-features
+I'm lib2.
+
+# 使用git submodule add命令为project1成功添加了两个公共类库（lib1、lib2），查看了当前的状态发现添加了一个新文件(.gitmodules)和两个文件夹(libs/lib1、libs/lib2),新增的.gitmodules作用:
+$ cat .gitmodules
+[submodule "libs/lib1"]
+        path = libs/lib1
+        url = /cygdrive/c/workspace/git-workspace/submd/repos/lib1.git
+[submodule "libs/lib2"]
+        path = libs/lib2
+        url = /cygdrive/c/workspace/git-workspace/submd/repos/lib2.git
+# .gitmodules记录了每个submodule的引用信息,知道当前项目的位置以及仓库的所在
+
+# 把project1提交到本地仓库
+$ git commit -am "add submodules[lib1,lib2] to project1"
+# 推送到远程仓库
+$ git push
+```
+
+##### 2.2、为project2添加lib1和lib2(完成1>2>3>4>5步后再执行)
+
+```shell
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+$ cd project2
+$ ls
+project-info.txt
+$ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib1.git libs/lib1
+$ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib2.git libs/lib2
+$ ls
+libs/ project-info.txt
+$ git submodule init
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+要提交的变更：
+  （使用 "git reset HEAD <文件>..." 以取消暂存）
+
+        新文件：   .gitmodules
+        新文件：   libs/lib1
+        新文件：   libs/lib2
+$ git commit -am "add lib1 and lib2"
+$ git push
+```
+
+#### 3、Clone带有Submodule的仓库
+
+```shell
+# 模拟开发人员b
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws
+$ git clone ../repos/project1.git project1-b
+$ cd project1-b
+$ git submodule
+-d667f3a948f362545e50fa9c6586a07ba6cd1aa9 libs/lib1
+-8556f52e9c47bfd3761a66c2828214fbc7675b89 libs/lib2
+# 看到submodules的状态是hash码和文件目录，但是注意前面有一个减号：-，含义是该子模块还没有检出
+
+# 检出project1-b的submodules
+$ git submodule init
+$ git submodule update
+# 上面两个命令(git submodule init & update)可以简化
+# 可以查看：.git/config文件的内容，最下面有submodule的注册信息
+
+# 验证一下类库的文件是否存在
+$ cat libs/lib1/lib1-features libs/lib2/lib2-features
+I'm lib1.
+I'm lib2.
+```
+
+#### 4、修改Submodule
+
+```shell
+# 在开发人员b的项目上修改Submodule的内容
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1-b
+# 先看一下当前Submodule的状态
+$ cd libs/lib1
+$ git status
+头指针分离于 d667f3a
+无文件要提交，干净的工作区
+# 为什么是Not currently on any branch呢？不是应该默认在master分支吗？
+# Git对于Submodule有特殊的处理方式，在一个主项目中引入了Submodule其实Git做了3件事情：
+#   记录引用的仓库
+#	记录主项目中Submodules的目录位置
+#	记录引用Submodule的commit id
+
+# 在project1中push之后其实就是更新了引用的commit id，然后project1-b在clone的时候获取到了submodule的commit id，然后当执行git submodule update的时候git就根据gitlink获取submodule的commit id，最后获取submodule的文件，所以clone之后不在任何分支上；但是master分支的commit id和HEAD保持一致。
+
+# 查看/cygdrive/c/workspace/git-workspace/submd/ws/project1-b/libs/lib1的引用信息
+$ cat  /cygdrive/c/workspace/git-workspace/submd/ws/project1-b/.git/modules/libs/lib1/HEAD
+d667f3a948f362545e50fa9c6586a07ba6cd1aa9
+$ cat  /cygdrive/c/workspace/git-workspace/submd/ws/project1-b/.git/modules/libs/lib1/refs/heads/master
+d667f3a948f362545e50fa9c6586a07ba6cd1aa9
+
+# 现在要修改lib1的文件需要先切换到master分支
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1-b/libs/lib1
+$ git checkout master
+$ echo "add by developer B" >> lib1-features
+$ git commit -am "update lib1-features by developer B"
+# 在主项目中修改Submodule提交到仓库稍微繁琐一点,在git push之前先看看project1-b状态
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1-b
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+        修改：     libs/lib1 (新提交)
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+# libs/lib1 (new commits)状态表示libs/lib1有新的提交,这个比较特殊,看看project1-b的状态
+$ git diff
+diff --git a/libs/lib1 b/libs/lib1
+index d667f3a..60987c6 160000
+--- a/libs/lib1
++++ b/libs/lib1
+@@ -1 +1 @@
+-Subproject commit d667f3a948f362545e50fa9c6586a07ba6cd1aa9
++Subproject commit 60987c6997cc4a8d78fb23609a43ab81a8bee91b
+# 从状态中可以看出libs/lib1的commit id由原来的d667f3a948f362545e50fa9c6586a07ba6cd1aa9更改为60987c6997cc4a8d78fb23609a43ab81a8bee91b
+# 注意:如果现在执行了git submodule update 操作那么libs/lib1的commit id又会还原到d667f3a948f362545e50fa9c6586a07ba6cd1aa,这样的话刚刚的修改是不是丢了呢?不会,因为修改已经提交到了master分支,只要再git checkout master就可以了
+
+# 现在可以把libs/lib1的修改提交到仓库了
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1-b/libs/lib1
+$ git push
+# 现在仅仅只完成了一步,下一步要提交project1-b引用submodule的commit id
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1-b
+$ git add -u
+$ git commit -m "update libs/lib1 to lastest commit id"
+$ git push
+# 完成了Submodule的修改并把libs/lib1的最新commit id提交到了仓库
+```
+
+#### 5、更新主项目的Submodules
+
+```shell
+# 进入project1目录同步仓库
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1
+$ git pull
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+        修改：     libs/lib1 (新提交)
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+# 运行了git pull命令和git status获取了最新的仓库源码，然后看到了状态时modified，这是为什么呢？
+# 用git diff比较一下不同
+$ git diff
+diff --git a/libs/lib1 b/libs/lib1
+index 60987c6..d667f3a 160000
+--- a/libs/lib1
++++ b/libs/lib1
+@@ -1 +1 @@
+-Subproject commit 60987c6997cc4a8d78fb23609a43ab81a8bee91b
++Subproject commit d667f3a948f362545e50fa9c6586a07ba6cd1aa9
+# 从diff的结果分析出来是因为submodule的commit id更改了，我们前面刚刚讲了要在主项目更新submodule的内容首先要提交submdoule的内容，然后再更新主项目中引用的submodule commit id；现在看到的不同就是因为刚刚更改了project1-b的submodule commit id；好的，来学习一下怎么更新project1的公共类库。
+$ git submodule update
+```
+
+#### 6、修改lib1和lib2并同步到project1和project2
+
+```shell
+# 假如开发人员C同时负责project1和project2，有可能在修改project1的某个功能的时候发现lib1或者lib2的某个组件有bug需要修复，这个需求多模块和大型系统中经常遇到，应该怎么解决呢？
+# 假如需求如下:
+#	在lib1中添加一个文件：README，用来描述lib1的功能
+# 	在lib2中的lib2-features文件中添加一写文字：学习Git submodule的修改并同步功能
+
+# 在lib1中添加一个文件: README
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project2
+$ cd libs/lib1
+$ echo "lib1 readme contents" > README
+$ git add README
+$ git commit -m "add file README"
+$ git push
+
+# 需要在project2中再更新lib1的commit id
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project2
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+        修改：     libs/lib1 (新提交)
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+$ git add libs/lib1
+$ git commit -m "update lib1 to lastest commit id"
+# 暂时不push到仓库,等待和lib2的修改一起push
+
+# 在lib2中的lib2-features文件添加文字
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project2
+$ cd libs/lib2
+$ echo "学习Git submodule的修改并同步功能" >> lib2-features
+$ cat lib2-features
+I'm lib2.
+学习Git submodule的修改并同步功能
+$ git commit -am "添加文字：学习Git submodule的修改并同步功能"
+$ git push
+
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project2
+$ git status
+位于分支 master
+您的分支领先 'origin/master' 共 1 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+        修改：     libs/lib2 (新提交)
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+$ git add libs/lib2
+$ git commit -m "update lib2 to lastest commit id"
+$ git status
+位于分支 master
+您的分支领先 'origin/master' 共 2 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+无文件要提交，干净的工作区
+$ git push
+```
+
+#### 7、同步project2的lib1和lib2的修改到project1
+
+```shell
+# 现在project2已经享受到了最新的代码带来的快乐，那么既然project1和project2属于同一个风格，或者调用同一个功能，要让这两个(可能几十个)项目保持一致。
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1
+$ git pull
+已经是最新的。
+# 看看上面的结果对吗？为什么lib1和lib2更新了但是没有显示new commits呢？说到这里我记得刚刚开始学习的时候真得要晕死了，Git跟我玩捉迷藏游戏，为什么明明提交了但是从project1更新不到任何改动呢？
+# 分析一下问题，不过在分析之前先看看当前(project1和project2)的submodule状态
+# project2 的状态，也就是刚刚修改后的状态
+$ cd /cygdrive/c/workspace/git-workspace/submd/ws/project2
+$ git submodule
+ aa552f2d9a6cfae5517480986535c71e78c67740 libs/lib1 (heads/master)
+ db3205381941638867f7a552ac94b023e4ed929e libs/lib2 (heads/master)
+# project1 的状态，等待更新submodules
+$ cd /cygdrive/c/workspace/git-workspace/submd/ws/project1
+$ git submodule
+ 60987c6997cc4a8d78fb23609a43ab81a8bee91b libs/lib1 (remotes/origin/HEAD)
+ 8556f52e9c47bfd3761a66c2828214fbc7675b89 libs/lib2 (heads/master)
+# 两个项目有两个区别
+#	commit id各不相同
+#	libs/lib1所处的分支不同
+```
+
+#### 8、更新project1的lib1和lib2改动
+
+```shell
+# 在project2中修改的时候把lib1和lib2都切换到了master分支，目前project1中的lib1不在任何分支，先切换到master分支
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1
+$ cd libs/lib1
+$ git checkout master
+$ git pull
+# 果不其然，看到了刚刚在project2中修改的内容，同步到了project1中，当然现在更新了project1的lib1，commit id也会随之变动
+$ cd ../../
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+        修改：     libs/lib1 (新提交)
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+$ git diff
+diff --git a/libs/lib1 b/libs/lib1
+index 60987c6..aa552f2 160000
+--- a/libs/lib1
++++ b/libs/lib1
+@@ -1 +1 @@
+-Subproject commit 60987c6997cc4a8d78fb23609a43ab81a8bee91b
++Subproject commit aa552f2d9a6cfae5517480986535c71e78c67740
+# 现在最新的commit id和project2目前的状态一致，说明真的同步了；好的，现在可以使用相同的办法更新lib2了
+$ cd libs/lib2
+$ git checkout master
+$ git pull
+```
+
+#### 9、更新project1的submodule引用
+
+```shell
+# 更新了project1的lib1和lib2的最新版本，现在要把最新的commit id保存到project1中以保持最新的引用
+$ pwd
+/cygdrive/c/workspace/git-workspace/submd/ws/project1
+$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git checkout -- <文件>..." 丢弃工作区的改动）
+
+        修改：     libs/lib1 (新提交)
+        修改：     libs/lib2 (新提交)
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+$ git commit -am "update lib1 and lib2 commit id to new version"
+$ git push
+```
+
+#### 10、更新到project1-b项目的子模块
+
+```shell
+$ git submodule foreach git pull
+```
+
+#### 11、一次性Clone项目和Submodules
+
+```shell
+# 一般人使用的时候都是使用如下命令
+$ git clone /path/to/repos/foo.git
+$ git submodule init
+$ git submodule update
+# 上面的命令简直弱暴了，直接一行命令搞定
+# –recursive参数的含义：可以在clone项目时同时clone关联的submodules
+$ git clone --recursive /path/to/repos/foo.git
+```
+
+#### 12、移除Submodule
+
+```shell
+# 删除git cache和物理文件夹
+$ git rm -r --cached libs/
+$ rm -rf libs
+# 删除.gitmodules的内容（或者整个文件） 因为本例只有两个子模块，直接删除文件
+$ rm .gitmodules
+# 如果仅仅删除某一个submodule那么打开.gitmodules文件编辑，删除对应submodule配置即可
+# 删除.git/config的submodule配置
+# 源文件
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+[remote "origin"]
+        url = /cygdrive/c/workspace/git-workspace/submd/ws/../repos/project1.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+        remote = origin
+        merge = refs/heads/master
+[submodule "libs/lib1"]
+        active = true
+        url = /cygdrive/c/workspace/git-workspace/submd/repos/lib1.git
+[submodule "libs/lib2"]
+        active = true
+        url = /cygdrive/c/workspace/git-workspace/submd/repos/lib2.git
+# 删除后
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+[remote "origin"]
+        url = /cygdrive/c/workspace/git-workspace/submd/ws/../repos/project1.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+        remote = origin
+        merge = refs/heads/master
+# 提交更改
+$ git status
+$ git add .gitmodules
+$ git commit -m "删除子模块lib1和lib2"
+$ git push
+```
+
+
 
 # 七、Eclipse操作
 
