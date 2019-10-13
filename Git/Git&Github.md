@@ -769,7 +769,7 @@ git pull  [远程库地址别名] [远程分支名]
 ```shell
 $ echo "# demo" >> README.md
 $ git init
-# 创建本地仓库 $ git --git-dir=demo.git init --bare
+$ branch 'master' of https://github.com/zczhao/doc-workspace.git
 $ git add README.md
 $ git commit -m "first commit"
 $ git remote add origin https://github.com/zczhao/demo.git
