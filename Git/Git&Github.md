@@ -792,6 +792,9 @@ $ git push
 $ git clone https://github.com/zczhao/demo.git
 # 推送到远程仓库
 $ git push
+# 批量删除多个目录下的文件或文件夹
+$ find tensquare-*/.gitignore -exec rm -rf {} \;
+$ find tensquare-*/target -exec rm -rf {} \;
 ```
 
 ### 11.5、标签管理

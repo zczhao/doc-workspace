@@ -111,7 +111,7 @@ https://docs.docker.com/install/linux/docker-ce/centos/
 
 ```
 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/
-# 本次下载的包为：docker-ce-19.03.2-3.el7.x86_64.rpm
+# 本次下载的包为：docker-ce-19.03.4-3.el7.x86_64.rpm
 ```
 
 ### 4.3、删除老版本docker
@@ -160,9 +160,9 @@ yum remove docker \
 ### 4.5、安装
 
 ```shell
-# docker安装包名为：docker-ce-19.03.2-3.el7.x86_64.rpm
+# docker安装包名为：docker-ce-19.03.4-3.el7.x86_64.rpm
 # 安装包的存储目录为： /root
-[root@localhost ~]# yum install -y /root/docker-ce-19.03.2-3.el7.x86_64.rpm
+[root@localhost ~]# yum install -y /root/docker-ce-19.03.4-3.el7.x86_64.rpm
 ```
 
 ### 4.6、检查是否安装成功
@@ -1266,7 +1266,161 @@ CMD /usr/local/apache-tomcat-9.0.24/bin/startup.sh && tail -F /usr/local/apache-
 
 ![](./images/2019-08-19_210217.png)
 
+## 5、案例2
+
+### 1、Dockerfile构建JDK镜像
+
+```dockerfile
+# 依赖镜像名称和版本
+FROM centos:7
+# 指定镜像创建者信息
+MAINTAINER zhaozhicheng
+# 切换工作目录
+WORKDIR /usr
+RUN mkdir /usr/local/java
+# ADD 是相对路径,把JDK添加到容器中
+ADD jdk-8u231-linux-x64.tar.gz /usr/local/
+# 配置JDK环境变量
+ENV JAVA_HOME /usr/local/jdk1.8.0_231
+ENV JRE_HOME $JAVA_HOME/jre
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+ENV PATH $JAVA_HOME/bin:$PATH
+```
+
+```shell
+[root@localhost dockerjdk8]# ls
+Dockerfile  jdk-8u231-linux-x64.tar.gz
+[root@localhost dockerjdk8]# docker build -t="jdk1.8" .
+[root@localhost ~]# docker run -di --name=tensquare_jdk jdk1.8
+[root@localhost ~]# docker exec -it tensquare_jdk /bin/bash
+```
+
+### 2、Docker私有仓库
+
+#### 2.1、私有创建搭建与配置
+
+```shell
+# 拉取私有仓库镜像
+[root@localhost ~]# docker pull registry
+# 启动私有仓库容器
+[root@localhost ~]# docker run -di --name=registry -p 5000:5000 registry
+# 打开浏览器输入地址：http://192.168.156.61:5000/v2/_catalog 看到{"repositories":[]}表示私有仓库搭建成功并且内容为空
+# 修改daemon.json，并添加内容："insecure-registries": ["192.168.156.61:5000"]，此步用于让Docker信任私有仓库地址
+[root@localhost ~]# vi /etc/docker/daemon.json
+# 重启docker服务
+[root@localhost ~]# systemctl restart docker
+```
+
+#### 2.2、镜像上传至私有仓库
+
+```shell
+# 标记此镜像为私有仓库的镜像
+[root@localhost ~]# docker tag jdk1.8 192.168.156.61:5000/jdk1.8
+# 启动私有仓库容器
+[root@localhost ~]# docker start registry
+# 上传标记的镜像
+[root@localhost ~]# docker push 192.168.156.61:5000/jdk1.8
+# 查看Registry中的镜像的所有tags
+# http://192.168.156.61:5000/v2/jdk1.8/tags/list
+```
+
+#### 2.3、DockerMaven插件
+
+微服务部署有两种方法：
+
+1. 手动部署：首先基于源码打包生成jar包(或war包)，将jar包(或war包)上传至虚拟机并拷贝至JDK容器
+2. 通过Maven插件自动部署
+   对于数量众多的微服务，手动部署无疑是非常麻烦的做法，并且容易出错。所以需要自动部署
+
+Maven插件自动部署步骤：
+
+```shell
+# 1、修改宿主机的docker位置，让其可以远程访问
+# 其中ExecStart=后添加配置 -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
+[root@localhost ~]# vi /lib/systemd/system/docker.service
+```
+
+修改后的内容：
+
+![](./images/20191101111054.png)
+
+```shell
+# 2、刷新配置，重启服务
+[root@localhost ~]# systemctl daemon-reload
+[root@localhost ~]# systemctl restart docker
+[root@localhost ~]# docker start registry
+# 需要查看2375是否对外访问(禁用防火墙)
+[root@localhost ~]# ps -ef|grep docker
+# 查看docker版本 http://192.168.156.61:2375/version
+[root@localhost ~]# docker -H tcp://192.168.156.61:2375 version
+# 查看docker镜像包
+[root@localhost ~]# docker -H tcp://192.168.156.61:2375 images
+```
+
+3、工程pom.xml增加配置
+
+```xml
+	<build>
+		<finalName>app</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- docker的maven插件，官网：https://github.com/spotify/docker-maven-plugin -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<imageName>192.168.156.61:5000/${project.artifactId}:${project.version}</imageName>
+					<baseImage>jdk1.8</baseImage>
+					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<dockerHost>http://192.168.156.61:2375</dockerHost>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+```
+
+以上配置会自动生成Dockerfile
+
+```dockerfile
+FROM jdk1.8
+ADD app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+4、在微服务工程所在的目录，输入以下命令，进行打包和上传镜像
+
+```shell
+mvn clean package docker:build -DpushImage -Dmaven.test.skip=true
+```
+
+5、查看镜像并启动容器
+
+```shell
+# 查看镜像是否存在 http://192.168.156.61:5000/v2/_catalog
+[root@localhost ~]# docker images | grep tensquare-config
+192.168.156.61:5000/tensquare-config   0.0.1-SNAPSHOT      05e3a573d6c7        6 minutes ago       637MB
+# 启动容器
+[root@localhost ~]# docker run -di --name=tensquare-config -p 12000:12000 192.168.156.61:5000/tensquare-config:0.0.1-SNAPSHOT
+```
+
+
+
+
+
 # 九、Docker常用安装
+
+
 
 ## 1、总体安装
 
@@ -1347,7 +1501,7 @@ Mon Aug 19 21:23:55 CST 2019
 #### 3.1、使用mysql镜像
 
 ```shell
-[root@localhost ~]# docker run -p 12345:3306 --name mysql -v /mydocker/mysql/conf/my.cnf:/etc/mysql/conf.d -v /mydocker/mysql/logs:/logs -v /mydocker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+[root@localhost ~]# docker run -p 3306:3306 --name mysql -v /mydocker/mysql/conf/my.cnf:/etc/mysql/conf.d -v /mydocker/mysql/logs:/logs -v /mydocker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 命令说明：
 -p 12345:3306	将主机的12345端口映射到docker容器的3306端口
 --name mysql	运行服务名字
@@ -1356,6 +1510,9 @@ Mon Aug 19 21:23:55 CST 2019
 -v /mydocker/mysql/data:/var/lib/mysql	将主机/mydocker/mysql/目录下的data目录挂载到容器/var/lib/mysql
 -e MYSQL_ROOT_PASSWORD=123456	初始化root用户的密码
 -d mysql:5.7	后台程序运行mysql5.7
+
+# 以下方式也可以启动(推荐用上面的命令)
+[root@localhost ~]# docker run -id --name=mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
 ```
 
 ```shell
@@ -2467,6 +2624,112 @@ aof-rewrite-incremental-fsync yes
 #### 2.4、测试持久化文件生成
 
 ![](./images/2019-08-19_225312.png)
+
+### 3、最新版安装
+
+```shell
+[root@localhost ~]# docker pull redis
+[root@localhost ~]# docker run -di --name=tensquare_redis -p 6379:6379 redis
+```
+
+## 5、安装MongoDB
+
+```shell
+[root@localhost ~]# docker pull mongo
+[root@localhost ~]# docker run -di --name=tensquare_mongo -p 27017:27017 mongo
+```
+
+## 6、安装Elasticsearch
+
+```shell
+[root@localhost ~]# docker pull elasticsearch:5.6.8
+[root@localhost ~]# docker run -di --name=tensquare_es -p 9200:9200 -p 9300:9300 elasticsearch:5.6.8
+# 浏览器输入地址：http://192.168.156.61:9200/
+
+# 进入容器
+[root@localhost ~]# docker exec -it tensquare_es /bin/bash
+# 让9300能访问，拷贝elasticsearch.yml文件到宿主机
+[root@localhost ~]# docker cp tensquare_es:/usr/share/elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch.yml
+[root@localhost ~]# docker stop tensquare_es
+[root@localhost ~]# docker rm tensquare_es
+[root@localhost ~]# docker run -di --name=tensquare_es -p 9200:9200 -p 9300:9300 -v /usr/share/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml elasticsearch:5.6.8
+# 修改/usr/share/elasticsearch.yml将transport.host: 0.0.0.0 前的#去掉后保存文件退出
+[root@localhost ~]# vi /usr/share/elasticsearch.yml
+transport.host: 0.0.0.0
+# 重新启动容器
+[root@localhost ~]# docker restart tensquare_es
+
+# 启动会失败，需要修改宿主机两个文件配置，都是追加内容
+# nofile是单个进程允许打开的最文件个数，soft nofile是软限制，hard nofile是硬限制
+[root@localhost ~]# vi /etc/security/limits.conf
+* soft nofile 65536
+* hard nofile 65536
+# 限制一个进程可以拥有的VMA(虚拟内存区域)的数量
+[root@localhost ~]# vi /etc/sysctl.conf
+vm.max_map_count=655360
+# 执行以下命令，修改内核参数马上生效
+[root@localhost ~]# sysctl -p
+[root@localhost ~]# docker start tensquare_es
+
+# 安装IK分词，下载elasticsearch-analysis-ik-5.6.8.zip包，解压后修改文件夹名为ik
+# 安装之前测试分词：http://192.168.156.61:9200/_analyze?analyzer=chinese&pretty=true&text=我是程序员
+[root@localhost ~]# docker cp /root/ik tensquare_es:/usr/share/elasticsearch/plugins
+# 测试IK分词是否安装成功：http://192.168.156.61:9200/_analyze?analyzer=ik_smart&pretty=true&text=我是程序员
+# IK分词可手动加词，复制ik/config/surname.dic一分，把文件名改为custom.dic,打开custom.dic文件清空内容，编码为UTF-8无BOM的,添加自定义的词语，然后把custom.dic加到IKAnalyzer.cfg.xml配置里
+
+# 安装head插件
+[root@localhost ~]# vi /usr/share/elasticsearch.yml
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+[root@localhost ~]# docker restart tensquare_es
+[root@localhost ~]# docker pull mobz/elasticsearch-head:5
+[root@localhost ~]# docker run -di --name=myhead -p 9100:9100 mobz/elasticsearch-head:5
+# 访问地址：http://192.168.156.61:9100/
+```
+
+## 7、安装RabbitMQ
+
+```shell
+[root@localhost ~]# docker pull rabbitmq:management
+# 需要有映射以下端口：5671 5672 4369 15671 15672 25672
+# 15672(if management plugin is enabled)
+# 15671 management plugin监听端口
+# 5671,5672(AMQP 0-9-1 without and with TLS)
+# 4369(epmd)epmd代表Erlang端口映射守护进程
+# 25672(Erlang distribution)
+[root@localhost ~]# docker run -di --name=tensquare_ribbitmq -p 5671:5671 -p 5672:5672 -p 4369:4369 -p 15671:15671 -p 15672:15672 -p 25672:25672 rabbitmq:management
+# 访问地址：http://192.168.156.61:15672/  guest/guest
+```
+
+## 8、安装Gogs（类似Gitlab）
+
+```shell
+# 下载镜像
+[root@localhost ~]# docker pull gogs/gogs
+# 创建容器
+[root@localhost ~]# docker run -di --name=gogs -p 10022:22 -p 3000:3000 -v /var/gogsdata:/data gogs/gogs
+# 访问地址：http://192.168.156.61:3000
+# 选择最简单的SQLite3，把下面所有的配置loalhost改为192.168.156.61
+# 注册用户
+```
+
+## 9、安装Rancher（容器管理工具）
+
+```shell
+# 下载rancher镜像
+[root@localhost ~]# docker pull rancher/server
+# 创建rancher容器
+# restart为重启策略
+# 	no：默认策略，在容器退出时不重启容器
+# 	on-failure，在容器非正常退出时(退出状态非0)，才会重启容器
+#   	on-failure:3，在容器非正常退出时重启容器，最多重启3次
+# 	always，在容器退出总是重启容器
+#	unless-stopped，在容器退出时总是重启容器，但是不考虑在Docker守护进程启动时就已经停止了的容器
+[root@localhost ~]# docker run -di --name=rancher --restart=always -p 9090:8080 rancher/server
+# 访问地址：http://192.168.156.61:9090
+```
+
+
 
 # 十、本地镜像发布到阿里云
 

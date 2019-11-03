@@ -5,6 +5,7 @@
 ### 1、备份原来的yum源
 
 ```shell
+[root@localhost ~]# yum -y install wget
 [root@localhost ~]# mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 ```
 

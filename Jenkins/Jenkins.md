@@ -201,6 +201,29 @@ auth-access = write
 
 ![](./images/2019-09-14_220335.png)
 
+### 3.5、另一种安装方式
+
+```shell
+# JDK安装
+[root@localhost ~]# rpm -ivh jdk-8u231-linux-x64.rpm
+# 下载Jenkins 文件名为：jenkins-2.190.2-1.1.noarch.rpm
+# Jenkins安装
+[root@localhost ~]# rpm -ivh jenkins-2.190.2-1.1.noarch.rpm
+# 配置Jenkins，修改用户和端口
+[root@localhost ~]# vi /etc/sysconfig/jenkins
+# Jenkins JDK默认位置是/usr/bin/java，如果不需要需要手动指定
+JENKINS_JAVA_CMD="/usr/local/jdk1.8.0_231/bin/java"
+JENKINS_USER="root"
+JENKINS_PORT="8080"
+# 启动服务
+[root@localhost ~]# systemctl start jenkins
+# 访问地址：http://192.168.156.61:8888/login?from=%2F
+# 密码从/var/lib/jenkins/secrets/initialAdminPassword获取
+[root@localhost ~]# cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+
+
 ## 5、系统初始化配置
 
 ### 5.1、系统管理  ->  全局安全配置

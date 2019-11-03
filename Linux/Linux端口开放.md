@@ -70,8 +70,10 @@
 ```shell
 # 重启
 [root@localhost ~]# systemctl restart firewalld.service
+# 禁止开机启动
+[root@localhost ~]# systemctl disable firewalld.service 
 # 启动
-[root@localhost ~]# systemctl start  firewalld
+[root@localhost ~]# systemctl start firewalld
 # 查看状态
 [root@localhost ~]# systemctl status firewalld 
 [root@localhost ~]# firewall-cmd --state
