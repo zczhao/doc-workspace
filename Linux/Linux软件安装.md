@@ -57,7 +57,7 @@ export CATALINA_HOME=/usr/local/apache-tomcat-8.0.53
 ## 5、启动服务
 
 ```shell
-[root@localhost ~]# cd /usr/local/apache-tomcat-8.0.53
+[root@localhost ~]# cd /usr/local/apache-tomcat-8.0.53/bin
 [root@localhost bin]# ./startup.sh && tailf ../logs/catalina.out
 ```
 
@@ -76,6 +76,160 @@ export CATALINA_HOME=/usr/local/apache-tomcat-8.0.53
 
 ```
 http://192.168.156.60:8080
+```
+
+# Tomcat 单机多实例配置
+
+## 1、上传下载的安装压缩包apache-tomcat-8.5.47.tar.gz
+
+## 2、解压压缩包并放到 /usr/local 目录
+
+```shell
+[root@localhost ~]# tar -zxvf apache-tomcat-8.5.47.tar.gz -C /usr/local/
+```
+
+## 3、配置多实例模板
+
+```shell
+# 进入解压目录
+[root@localhost ~]# cd /usr/local/apache-tomcat-8.5.47/
+# 默认的Tomcat目录结构如下
+[root@localhost apache-tomcat-8.5.47]# tree -dL 2
+.
+├── bin
+├── conf
+├── lib
+├── logs
+├── temp
+├── webapps
+│   ├── docs
+│   ├── examples
+│   ├── host-manager
+│   ├── manager
+│   └── ROOT
+└── work
+
+# 删除无用文件
+[root@localhost apache-tomcat-8.5.47]# rm -rf LICENSE
+[root@localhost apache-tomcat-8.5.47]# rm -rf NOTICE
+[root@localhost apache-tomcat-8.5.47]# rm -rf RELEASE-NOTES
+[root@localhost apache-tomcat-8.5.47]# rm -rf RUNNING.txt
+# 创建web实例模板文件夹，以后部署新实例只需要拷贝一份
+[root@localhost apache-tomcat-8.5.47]# mkdir web-template
+# 移动实例必需要的文件到实例模板文件夹
+[root@localhost apache-tomcat-8.5.47]# mv conf/ ./web-template/
+[root@localhost apache-tomcat-8.5.47]# mv logs/ ./web-template/
+[root@localhost apache-tomcat-8.5.47]# mv temp/ ./web-template/
+[root@localhost apache-tomcat-8.5.47]# mv webapps/ ./web-template/
+[root@localhost apache-tomcat-8.5.47]# mv work/ ./web-template/
+```
+
+## 4、在模板文件夹下编写启动停止Tomcat的shell脚本
+
+```shell
+[root@localhost apache-tomcat-8.5.47]# cd web-template/
+[root@localhost web-template]# vi tomcat.sh
+```
+
+tomcat.sh
+
+```shell
+ETVAL=$?
+# tomcat实例目录
+export CATALINA_BASE="$PWD"
+# tomcat安装目录，当前目录的上级目录
+export CATALINA_HOME=$(dirname "$PWD")
+# 可选
+export JVM_OPTIONS="-Xms128m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=512m"
+case "$1" in
+    start)
+      if [ -f $CATALINA_HOME/bin/startup.sh ];then
+        echo $"Start Tomcat"
+        $CATALINA_HOME/bin/startup.sh
+      fi
+    ;;
+    stop)
+      if [ -f $CATALINA_HOME/bin/shutdown.sh ];then
+        echo $"Stop Tomcat"
+        $CATALINA_HOME/bin/shutdown.sh
+      fi
+    ;;
+    *)
+      echo $"Usage:$0 {start|stop}"
+      exit 1
+    ;;
+esac
+exit $RETVAL
+
+```
+
+## 5、赋予执行权限
+
+```shell
+[root@localhost web-template]# chmod +x tomcat.sh
+```
+
+## 6、单实例测试
+
+```shell
+# 经过上面的配置后，现在的Tomcat目录结构如下
+[root@localhost apache-tomcat-8.5.47]# tree -dL 2
+.
+├── bin
+├── lib
+└── web-template
+    ├── conf
+    ├── logs
+    ├── temp
+    ├── webapps
+    └── work
+[root@localhost apache-tomcat-8.5.47] cd web-template
+# 启动实例
+[root@localhost web-template] sh tomcat.sh start
+# 停止实例
+[root@localhost web-template] sh tomcat.sh stop
+```
+
+## 7、增加实例测试
+
+```shell
+[root@localhost apache-tomcat-8.5.47]# tree -dL 2
+.
+├── bin
+├── lib
+└── web-template
+    ├── conf
+    ├── logs
+    ├── temp
+    ├── webapps
+    └── work
+# 增加一个实例，只拷贝一份模板实例。然后修改端口号即可。不然会因为端口占用而无法启动。    
+# 拷贝一份实例
+[root@localhost apache-tomcat-8.5.47]# cp -r web-template/ 8081
+# 拷贝一份实例后的的Tomcat目录结构
+[root@localhost apache-tomcat-8.5.47]# tree -dL 2
+.
+├── 8081
+│   ├── conf
+│   ├── logs
+│   ├── temp
+│   ├── webapps
+│   └── work
+├── bin
+├── lib
+└── web-template
+    ├── conf
+    ├── logs
+    ├── temp
+    ├── webapps
+    └── work
+[root@localhost apache-tomcat-8.5.47]# cd 8081
+[root@localhost 8081]# vi /conf/server.xml
+# 修改SHUTDOWN端口号从8005变为8001，第22行左右
+<Server port="8001" shutdown="SHUTDOWN">
+# 修改HTTP端口号从8080变为9090，第69行左右
+<Connector port="8081" protocol="HTTP/1.1"
+[root@localhost 8081]# sh tomcat.sh start
 ```
 
 # Linux Tomcat热部署
@@ -356,5 +510,215 @@ http://192.168.156.61:8888/login?from=%2F
 
 ```shell
 [root@localhost ~]# cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+# CentOS 6.x Nginx安装
+
+## 1、[下载](http://nginx.org/)压缩包并nginx-1.17.3.tar.gz解压
+
+```shell
+[root@localhost ~]# tar -zxvf nginx-1.17.3.tar.gz
+```
+
+## 2、安装nginx所需依赖
+
+```shell
+[root@localhost ~]# yum -y install gcc zlib zlib-devel pcre-devel openssl openssl-devel
+```
+
+## 3、 进入解压目录
+
+```shell
+[root@localhost ~]# cd nginx-1.17.3
+[root@localhost nginx-1.17.3]# ./configure
+```
+
+## 4、编译
+
+```shell
+[root@localhost nginx-1.17.3]# make
+```
+
+## 5、安装
+
+```shell
+[root@localhost nginx-1.17.3]# make install
+```
+
+## 6、启动nginx
+
+```shell
+[root@localhost nginx-1.17.3]# whereis nginx
+nginx: /usr/local/nginx
+[root@localhost nginx-1.17.3]# cd /usr/local/nginx/sbin
+# 启动
+[root@localhost sbin]# ./nginx
+# 重启
+[root@localhost sbin]# ./nginx -s reload
+```
+
+## 7、防火墙开放80端口，在浏览器能过IP地址验证是否能打开nginx页面
+
+```shell
+# 查看80端口是否启动
+[root@localhost ~]# netstat -nultp | grep :80
+tcp        0      0 0.0.0.0:80                  0.0.0.0:*                   LISTEN      44844/nginx
+[root@localhost ~]# vim /etc/sysconfig/iptables
+```
+
+# CentOS 7.x Nginx安装
+
+## 1、[下载](http://nginx.org/)压缩包并nginx-1.17.5.tar.gz解压
+
+```shell
+[root@localhost ~]# tar -zxvf nginx-1.17.5.tar.gz
+```
+
+## 2、安装nginx所需依赖
+
+```shell
+# gcc gcc-c++ nginx 编译时依赖 gcc 环境
+# pcre pcre-devel 让 nginx 支持重写功能
+# zlib zlib-devel 提供了很多压缩和解压缩的方式，nginx 使用 zlib 对 http 包内容进行 gzip 压缩
+# openssl openssl-devel 安全套接字层密码库，用于通信加密
+[root@localhost ~]# yum -y install gcc gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel
+```
+
+## 3、 进入解压目录
+
+```shell
+[root@localhost ~]# cd nginx-1.17.5
+# 检查平台安装环境
+# --prefix=/usr/local/nginx  是 nginx 编译安装的目录（推荐），安装完后会在此目录下生成相关文件
+[root@localhost nginx-1.17.5]# ./configure --prefix=/usr/local/nginx
+```
+
+## 4、编译
+
+```shell
+[root@localhost nginx-1.17.5]# make
+```
+
+## 5、安装
+
+```shell
+[root@localhost nginx-1.17.5]# make install
+```
+
+## 6、启动nginx
+
+```shell
+# 启动服务
+[root@localhost ~]# /usr/local/nginx/sbin/nginx
+# 重新加载服务
+[root@localhost ~]# /usr/local/nginx/sbin/nginx -s reload
+# 停止服务
+[root@localhost ~]# /usr/local/nginx/sbin/nginx -s stop
+```
+
+## 7、防火墙开放80端口，在浏览器能过IP地址验证是否能打开nginx页面
+
+```shell
+[root@localhost ~]# systemctl stop firewalld
+[root@localhost ~]# yum -y install net-tools
+[root@localhost ~]# netstat -nultp | grep :80
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      5368/nginx: master
+```
+
+# CentOS 7.x  Keepalived安装
+
+## 1、[下载](https://www.keepalived.org/download.html)压缩包并keepalived-2.0.19.tar.gz解压
+
+```shell
+[root@localhost ~]# tar -zxvf keepalived-2.0.19.tar.gz
+```
+
+## 2、安装keepalived所需依赖
+
+```shell
+[root@localhost ~]# yum -y install libnl libnl-devel libnfnetlink-devel
+```
+
+## 3、 进入解压目录
+
+```shell
+[root@localhost ~]# cd keepalived-2.0.19
+[root@localhost keepalived-2.0.19]# ./configure --prefix=/usr/local/keepalived
+```
+
+## 4、编译
+
+```shell
+[root@localhost keepalived-2.0.19]# make
+```
+
+## 5、安装
+
+```shell
+[root@localhost keepalived-2.0.19]# make install
+```
+
+## 6、配置开机启动服务
+
+```shell
+[root@localhost ~]# mkdir -p /etc/keepalived
+[root@localhost ~]# cp /usr/local/keepalived/etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf
+[root@localhost ~]# cp /root/keepalived-2.0.19/keepalived/etc/init.d/keepalived /etc/rc.d/init.d/keepalived
+[root@localhost ~]# cp /usr/local/keepalived/etc/sysconfig/keepalived /etc/sysconfig/keepalived
+
+```
+
+## 7、启动/关闭服务
+
+```shell
+# 启动
+[root@localhost ~]# systemctl start keepalived
+# 开机启动
+[root@localhost ~]# systemctl enable keepalived.service
+# 查看是否开机启动
+[root@localhost ~]# systemctl is-enabled keepalived.service
+```
+
+# CentOS 7.x Nexus安装
+
+## 1、[官网下载unix版本](https://www.sonatype.com/download-oss-sonatype)latest-unix.tar.gz
+
+```shell
+[root@localhost ~]# tar -zxvf latest-unix.tar.gz -C /usr/local
+```
+
+## 2、启动nexus
+
+```shell
+# 第一次启动使用 第一次启动比较慢
+[root@localhost ~]# cd /usr/local/nexus-3.18.1-01/bin/
+# 启动访问web页面
+[root@localhost bin]# ./nexus run &
+# 启动nexus
+[root@localhost bin]# ./nexus start
+# 查看nexus运行状态
+[root@localhost bin]# ./nexus status
+```
+
+## 3、开启远程访问端口
+
+```shell
+[root@localhost ~]# firewall-cmd --zone=public --add-port=8081/tcp --permanent
+[root@localhost ~]# firewall-cmd --reload
+```
+
+## 4、打开网页测试是否成功
+
+访问地址：http://192.168.156.61:8081
+
+```shell
+[root@localhost etc]# pwd
+/usr/local/nexus-3.18.1-01/etc
+# 修改默认端口
+[root@localhost etc]# vi nexus-default.properties
+application-port=8081
+
+# 用户名为：admin，默认密码路径
+[root@localhost ~]# cat /usr/local/sonatype-work/nexus3/admin.password
 ```
 

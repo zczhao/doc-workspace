@@ -58,7 +58,6 @@ export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node
 nvm --help                          显示所有信息
 nvm --version                       显示当前安装的nvm版本
 nvm install [-s] <version>          安装指定的版本，如果不存在.nvmrc,就从指定的资源下载安装
-nvm install [-s] <version>  -latest-npm 安装指定的版本，平且下载最新的npm
 nvm uninstall <version>             卸载指定的版本
 nvm use [--silent] <version>        使用已经安装的版本  切换版本
 nvm current                         查看当前使用的node版本
@@ -66,10 +65,14 @@ nvm ls                              查看已经安装的版本
 nvm ls  <version>                   查看指定版本
 nvm ls-remote                       显示远程所有可以安装的nodejs版本
 nvm ls-remote --lts                 查看长期支持的版本
-nvm install-latest-npm              安装罪行的npm
+nvm install-latest-npm              安装最新的npm
 nvm reinstall-packages <version>    重新安装指定的版本
 nvm cache dir                       显示nvm的cache
 nvm cache clear                     清空nvm的cache
+nvm list [available]
+  - nvm list 查看已经安装的版本
+  - nvm list installed 查看已经安装的版本
+  - nvm list available 查看网络可以安装的版本
 ```
 
 ## 4、安装node
