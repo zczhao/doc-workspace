@@ -127,7 +127,79 @@ npm config set registry https://registry.npm.taobao.org/
 执行下面的命令，确认是否切换成功：
 ```
 npm config get registry
+# https://registry.npm.taobao.org 淘宝源
+# https://registry.npmjs.org 官方源
 ```
+
+```
+# 列出配置
+npm config list
+# 列出所有配置(包括默认项)
+npm config list -l
+```
+
+如查 npm 设置的阿里源，无法使用 npm search，解决办法：
+
+```shell
+vim ~/.npmrc
+registry=https://registry.npmjs.org/
+# 可以使用cnpm代替npm进行install, 而使用npm进行search
+npm install -g cnpm —registry=https://registry.npm.taobao.org/ 
+```
+
+# NPM
+
+## 1、常用命令
+
+### 1.1、基本命令
+
+```shell
+# 查看 npm 版本
+npm -v
+
+# 查看安装信息
+npm list -g
+
+# 装模块
+npm install <Module Name>
+
+# 新模块
+npm update <Module Name>
+
+# 卸载模块
+npm uninstall <Module Name>
+
+# 搜索模块
+npm search <Module Name>
+
+# 清空缓存
+npm cache clear 
+
+# 创建模块
+npm init
+```
+
+### 1.2、全局安装与本地安装
+
+- **全局安装**
+
+  1. 将安装包放在 /usr/local 下或者你 node 的安装目录。
+
+  2. 可以直接在命令行里使用。
+
+- **本地安装**
+
+  1. 将安装包放在 ./node_modules 下（运行 npm 命令时所在的目录），如果没有 node_modules 目录，会在当前执行 npm 命令的目录下生成 node_modules 目录。
+  2. 可以通过 require() 来引入本地安装的包。
+
+```shell
+# 本地安装 
+npm install express
+# 全局安装
+npm install express -g
+```
+
+
 
 # Bower
 

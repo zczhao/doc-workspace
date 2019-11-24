@@ -460,6 +460,13 @@ OPTIONS说明(常用)：
 	-n：显示最近n个创建的容器
 	-q：静默模式，只显示容器编号
 	--no-trunc：不截断输出
+
+# 查看所有容器
+[root@localhost ~]# docker ps -a
+# 查看最近一次运行的容器
+[root@localhost ~]# docker ps -l
+# 查看停止的容器
+[root@localhost ~]# docker ps -f status=exited
 ```
 
 ### 4、退出容器(两种方式)
@@ -509,7 +516,17 @@ OPTIONS说明(常用)：
 
 ```shell
 # docker run -d 容器名
-
+# run后面可以参数
+-i	表示运行容器
+-t	表示容器启动后进入其命令行
+--name 为创建的容器命名
+-v	表示目录映射关系(前者是宿主机的目录，后者是映射到宿主机上的目录)
+-d	在run后面加上 -d 参数，则会创建一个守护式容器在后台运行
+-p	表示端口映射，前者是宿主机端口，后者是容器内的映射端口
+# 交互式方式创建容器
+[root@localhost ~]# docker run -it --name=容器名称 镜像名称:标签 /bin/bash
+# 守护式方式创建容器
+[root@localhost ~]# docker run -di --name=容器名称 镜像名称:标签
 # 使用镜像centos:latest以后台模式启动一个容器
 [root@localhost ~]# docker run -d centos
 
@@ -562,6 +579,8 @@ root                100723              86266               0                   
 
 ```shell
 # docker inspect 容器ID
+# 查看容器ip地址
+[root@localhost ~]# docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 容器名称(容器 ID)
 ```
 
 #### 10.5、进入正在运行的容器并以命令行交互
@@ -590,6 +609,10 @@ total 4
 #### 10.6、从容器内拷贝文件到主机上
 
 ```shell
+# 将文件拷贝到容器内
+[root@localhost ~]# docker cp 需要拷贝的文件或目录 容器名称:容器目录
+# 将文件从容器内拷贝出来
+[root@localhost ~]# docker cp  容器名称:容器目录 需要拷贝存入的文件或目录
 # docker cp 容器ID:容器内路径 目的主机路径
 [root@localhost ~]# docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
@@ -668,7 +691,7 @@ rootfs(root file system)，在bootfsp之上。包含的就是典型Linux系统�
 # docker commit -m="提交的描述信息" -a="作者" 容器ID 要创建的目标镜像名:[标签名]
 ```
 
-### 3.1、案例演示
+### 3.1、案例演示1
 
 1、从Hub上下载tocmat镜像到本地并成功运行
 
@@ -717,6 +740,20 @@ t：终端
 
 **后台启动**
 ![](./images/2019-07-20_193540.png)
+
+### 3.2、案例演示2
+
+```shell
+# 容器保存为镜像
+docker commit 容器名称 镜像名称
+
+# 例
+docker commit mysql mysql_zczhao
+# 将镜像保存为 tar 文件
+docker save -o mysql_zczhao.tar mysql_zczhao
+# 镜像恢复与迁移：-i 输入的文件
+docker load -i mysql_zczhao.tar
+```
 
 # 七、容器数据卷
 
