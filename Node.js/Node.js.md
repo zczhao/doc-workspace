@@ -93,9 +93,11 @@ nvm list [available]
 [root@localhost nvm]# npm config -g set registry https://registry.npm.taobao.org
 ```
 
-# Windows环境变量
+# Node/npm环境变量
 
-## 一、Path配置
+## 1、windows环境变量配置
+
+### 1.1、Path配置
 
 ```
 NODE_HOME
@@ -109,15 +111,20 @@ Path
 %NODE_GLOBAL%\
 ```
 
-## 二、建立node_global、node_cache文件夹
+### 1.2、建立node_global、node_cache文件夹
 
-```
+```shell
+# 第一种配置方式
+vim ~/.npmrc
+prefix=C:\workspace\nodejs\node_global
+cache=C:\workspace\nodejs\node_cache
+# 第二种配置方式
 npm config set prefix "C:\workspace\nodejs\node_global"
 npm config set cache "C:\workspace\nodejs\node_cache"
 npm root -g
 ```
 
-## 三、npm切换阿里源
+### 1.3、npm切换阿里源
 
 不安装 cnpm 只用淘宝镜像，设置 npm 的镜像：
 ```
@@ -144,7 +151,37 @@ npm config list -l
 vim ~/.npmrc
 registry=https://registry.npmjs.org/
 # 可以使用cnpm代替npm进行install, 而使用npm进行search
-npm install -g cnpm —registry=https://registry.npm.taobao.org/ 
+npm install -g cnpm --registry=https://registry.npm.taobao.org 
+```
+
+## 2、其他系统环境变量配置
+
+2.1、Path配置
+
+```shell
+vim ~/.bash_profile
+export NODE_HOME=/usr/local/node-v12.13.1
+export NODE_PATH=/Users/zczhao/Documents/Data/nodejs/node_globa
+export PATH=$PATH:$NODE_HOME/bin:$NODE_PATH
+```
+
+### 2.2、建立node_global、node_cache文件夹
+
+```shell
+# 第一种配置方式
+vim ~/.npmrc
+prefix=/Users/zczhao/Documents/Data/nodejs/node_globa
+cache=/Users/zczhao/Documents/Data/nodejs/node_cache
+# 第二种配置方式
+npm config set prefix "/Users/zczhao/Documents/Data/nodejs/node_globa"
+npm config set cache "/Users/zczhao/Documents/Data/nodejs/node_cache"
+npm root -g
+```
+
+### 2.3、cnpm安装
+
+```shell
+npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
 
 # NPM
