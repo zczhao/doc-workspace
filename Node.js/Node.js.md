@@ -162,7 +162,7 @@ npm install -g cnpm --registry=https://registry.npm.taobao.org
 vim ~/.bash_profile
 export NODE_HOME=/usr/local/node-v12.13.1
 export NODE_PATH=/Users/zczhao/Documents/Data/nodejs/node_globa
-export PATH=$PATH:$NODE_HOME/bin:$NODE_PATH
+export PATH=$PATH:$NODE_HOME/bin:$NODE_PATH/bin
 ```
 
 ### 2.2、建立node_global、node_cache文件夹

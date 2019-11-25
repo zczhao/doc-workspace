@@ -60,3 +60,4 @@ void 类型
 never 类型
 ```
 
+# 三、Typescript中的函数
