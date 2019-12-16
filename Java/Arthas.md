@@ -924,3 +924,313 @@ public class UserController {
 }
 ```
 
+## 4.12、火焰图（profiler）
+
+**命令格式**
+
+```shell
+$ profiler action [actionArg]
+```
+
+**启动profiler**
+
+```shell
+# 默认情况下，生成的是cpu的火焰图，即event为cpu。可以用--event参数来指定
+$ profiler start
+```
+
+**获取已采集的sample的数量**
+
+```shell
+$ profiler getSamples
+```
+
+**查看profiler状态**
+
+```shell
+$ profiler status
+```
+
+**停止profiler**
+
+生成svg格式结果
+
+```shell
+$ profiler stop
+# 默认情况下，生成的结果保存到应用的 工作目录 下的 arthas-output 目录。可以通过 --file 参数来指定输出结果路径。
+$ profiler stop --file /tmp/output.svg
+```
+
+生成html格式结果
+
+```shell
+$ profiler stop --format html
+# 或者在--file参数里用文件名指名格式。比如--file /tmp/result.html
+```
+
+通过浏览器查看arthas-output下面的profiler结果
+
+```shell
+# 默认情况下，arthas使用3658端口，则可以打开： http://localhost:3658/arthas-output/ 查看到arthas-output目录下面的profiler结果
+http://localhost:3658/arthas-output/
+```
+
+**profiler支持的events**
+
+```shell
+$ profiler list
+# 用--event参数指定要采样的事件，比如对alloc事件进入采样
+$ profiler start --event alloc
+```
+
+**恢复采样**
+
+```shell
+$ profiler resume
+# start和resume的区别是：start是新开始采样，resume会保留上次stop时的数据。
+# 通过执行profiler getSamples可以查看samples的数量来验证
+```
+
+**使用 execute 来执行复杂的命令**
+
+```shell
+# 开始采样
+$ profiler execute 'start'
+# 停止采样，并保存到指定文件里
+$ profiler execute 'stop,file=/tmp/result.svg'
+```
+
+**查看所有支持的action**
+
+```shell
+$ profiler actions
+```
+
+**查看版本**
+
+```shell
+[arthas@40481]$ profiler version
+```
+
+## 4.13、打印文件内容（cat）
+
+打印文件内容，和 linux 里的 cat 命令类似
+
+```shell
+$ cat /tmp/a.txt
+```
+
+## 4.14、grep
+
+类似传统的 grep 命令
+
+# 5、火焰图
+
+Java性能分析工具 - **async-profiler**
+
+Arthas 火焰图官方文档：https://alibaba.github.io/arthas/profiler.html
+
+## 5.1、async-profiler  介绍
+
+async-profiler 是一款开源的 Java 性能分析工具，原理基于 HotSpot 的 API，以微乎其微的性能开销收集程序运行中的堆栈信息，内存分配等信息进行分析。
+
+其他信息可以看官方文档：https://github.com/jvm-profiling-tools/async-profiler
+
+## 5.2、async-profiler 安装
+
+安装包下载地址：https://github.com/jvm-profiling-tools/async-profiler/releases
+
+**源码安装**
+
+环境要求：
+
+- JDK
+
+- git
+
+- GCC
+
+  ```shell
+  yum -y install gcc gcc-c++ kernel-devel
+  ```
+
+安装步骤：
+
+```shell
+git clone https://github.com/jvm-profiling-tools/async-profiler
+cd async-profiler
+make
+```
+
+## 5.3、async-profiler 使用
+
+运行项目里的 profiler.sh 可以看到 async-profiler 的使用帮助文档。
+
+```shell
+[root@localhost async-profiler]# ./profiler.sh
+Usage: ./profiler.sh [action] [options] <pid>
+Actions:
+  start             start profiling and return immediately
+  resume            resume profiling without resetting collected data
+  stop              stop profiling
+  status            print profiling status
+  list              list profiling events supported by the target JVM
+  collect           collect profile for the specified period of time
+                    and then stop (default action)
+Options:
+  -e event          profiling event: cpu|alloc|lock|cache-misses etc.
+  -d duration       run profiling for <duration> seconds
+  -f filename       dump output to <filename>
+  -i interval       sampling interval in nanoseconds
+  -j jstackdepth    maximum Java stack depth
+  -b bufsize        frame buffer size
+  -t                profile different threads separately
+  -s                simple class names instead of FQN
+  -g                print method signatures
+  -a                annotate Java method names
+  -o fmt            output format: summary|traces|flat|collapsed|svg|tree|jfr
+  -v, --version     display version string
+
+  --title string    SVG title
+  --width px        SVG width
+  --height px       SVG frame height
+  --minwidth px     skip frames smaller than px
+  --reverse         generate stack-reversed FlameGraph / Call tree
+
+  --all-kernel      only include kernel-mode events
+  --all-user        only include user-mode events
+  --sync-walk       use synchronous JVMTI stack walker (dangerous!)
+
+<pid> is a numeric process ID of the target JVM
+      or 'jps' keyword to find running JVM automatically
+
+Example: ./profiler.sh -d 30 -f profile.svg 3456
+         ./profiler.sh start -i 999000 jps
+         ./profiler.sh stop -o summary,flat jps
+```
+
+可以看到使用的方式是：Usage：./profiler.sh [action] [options] ，也就是 **命令+操作+参数+PID**
+
+生成SVG文件例子：
+
+```shell
+./profiler.sh -d 30 -f profiler.svg 1234
+```
+
+这个命令的意思是，对 PID 为 1234 的 Java 进程采样 30 秒，然后生成 profiler.svg 结果文件。
+
+默认情况下是分析 CPU 性能，如果要进行其他分析，可以使用 -e 参数。
+
+```shell
+-e event          profiling event: cpu|alloc|lock|cache-misses etc.
+```
+
+可以看到支持的分析事件有 CPU、Alloc、Lock、Cache-misses
+
+## 5.4、async-profiler 使用安全
+
+Java 安全编码
+
+很简单的几个方法，hotmethod 方法写了几个常见操作，三个方法中很显示 hotmethod3 方法里的 UUID 和 replace(需要正则匹配) 操作消耗的CPU性能会较多。allocate 方法里因为要不断的创建长度为 6 万的数组，消耗的内存空间一定是最多的。
+
+```java
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.UUID;
+
+/**
+ * <p>
+ * 模拟热点代码
+ *
+ */
+public class HotCode {
+
+    private static volatile int value;
+
+    private static Object array;
+
+    public static void main(String[] args) {
+        while (true) {
+            hotmethod1();
+            hotmethod2();
+            hotmethod3();
+            allocate();
+        }
+    }
+
+    /**
+     * 生成 6万长度的数组
+     */
+    private static void allocate() {
+        array = new int[6 * 1000];
+        array = new Integer[6 * 1000];
+    }
+
+    /**
+     * 生成一个UUID
+     */
+    private static void hotmethod3() {
+        ArrayList<String> list = new ArrayList<>();
+        UUID uuid = UUID.randomUUID();
+        String str = uuid.toString().replace("-", "");
+        list.add(str);
+    }
+
+    /**
+     * 数字累加
+     */
+    private static void hotmethod2() {
+        value++;
+    }
+
+    /**
+     * 生成一个随机数
+     */
+    private static void hotmethod1() {
+        Random random = new Random();
+        int anInt = random.nextInt();
+    }
+}
+```
+
+### 5.4.1、CPU性能分析
+
+```shell
+[root@localhost ~]# javac HotCode.java
+# 运行
+[root@localhost ~]# java HotCode
+# 查看进程
+[root@localhost ~]# jps
+40481 HotCode
+40510 Jps
+```
+
+上面运行的类名是 HotCode ，可以看到对应的 PID 是 40481。
+
+```shell
+# 对 40481 进程采样20秒,然后在 /root 目录下生成 40481.svg 文件，可以使用浏览器打开这个文件，可以看到 CPU 的使用火焰图
+[root@localhost async-profiler]# ./profiler.sh -d 20 -f /root/40481.svg 40481
+```
+
+### 5.4.2、Heap 内存分析
+
+还是上面运行的程序，进程 PID 还是 40481，这次使用 -e 参数分析内存使用情况。
+
+```shell
+# 收集进程 40481 的内存信息 20 秒，然后输出为 40481-alloc.svg 文件，20 秒后得到 svg 文件使用浏览器打开，就可以看到内存分配情况
+[root@localhost async-profiler]#./profiler.sh -d 20 -e alloc -f /root/40481-alloc.svg 40481
+```
+
+## 5.5、如何读懂火焰图
+
+y 轴表示调用栈，每一层都是一个函数。调用栈越深，火焰就越高，顶部就是正在执行的函数，下方都是它的父函数。
+
+x 轴表示抽样数，如果一个函数在 x 轴占据的宽度越宽，就表示它被抽到的次数多，即执行的时间长。注意，x轴不代表时间，而是所有调用栈合并后，按字母顺序排列的。
+
+火焰图就是看顶层的哪个函数占据的宽度最大。只要有"平顶"(plateaus)，就表示该函数可能存在性能问题。
+
+![](./images/bg2017092504.jpg)
+
+最顶层的 ==g()== 占用 CPU 时间最多。==d()== 的宽度最大，但是它直接耗用 CPU 的部分很少。==b()== 和 ==c()== 没有直接消耗 CPU。因此，如果要调查性能问题，首先应该调查 ==g()== ，其次是 ==i()==。
+
+另外，从图中可知 ==a()== 有两个分支 ==b()== 和 ==h()==，这表明 ==a()== 里面可能有一个条件语句，而 ==b()== 分支消耗的 CPU 大大高于 ==h()== 
