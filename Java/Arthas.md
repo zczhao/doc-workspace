@@ -924,6 +924,7 @@ public class UserController {
 }
 ```
 
+<<<<<<< HEAD
 ## 4.12、火焰图（profiler）
 
 **命令格式**
@@ -1023,6 +1024,95 @@ $ cat /tmp/a.txt
 ## 4.14、grep
 
 类似传统的 grep 命令
+=======
+## 4.12、profiler 火焰图
+
+**命令格式**
+
+```shell
+$ profiler action [actionArg]
+```
+
+**启动profiler**
+
+```shell
+# 默认情况下，生成的是cpu的火焰图，即event为cpu。可以用--event参数来指定
+$ profiler start
+```
+
+**获取已采集的sample的数量**
+
+```shell
+$ profiler getSamples
+```
+
+**查看profiler状态**
+
+```shell
+$ profiler status
+```
+
+**停止profiler**
+
+生成svg格式结果
+
+```shell
+$ profiler stop
+# 默认情况下，生成的结果保存到应用的 工作目录 下的 arthas-output 目录。可以通过 --file 参数来指定输出结果路径。
+$ profiler stop --file /tmp/output.svg
+```
+
+生成html格式结果
+
+```shell
+$ profiler stop --format html
+# 或者在--file参数里用文件名指名格式。比如--file /tmp/result.html
+```
+
+通过浏览器查看arthas-output下面的profiler结果
+
+```shell
+# 默认情况下，arthas使用3658端口，则可以打开： http://localhost:3658/arthas-output/ 查看到arthas-output目录下面的profiler结果
+http://localhost:3658/arthas-output/
+```
+
+**profiler支持的events**
+
+```shell
+$ profiler list
+# 用--event参数指定要采样的事件，比如对alloc事件进入采样
+$ profiler start --event alloc
+```
+
+**恢复采样**
+
+```shell
+$ profiler resume
+# start和resume的区别是：start是新开始采样，resume会保留上次stop时的数据。
+# 通过执行profiler getSamples可以查看samples的数量来验证
+```
+
+**使用 execute 来执行复杂的命令**
+
+```shell
+# 开始采样
+$ profiler execute 'start'
+# 停止采样，并保存到指定文件里
+$ profiler execute 'stop,file=/tmp/result.svg'
+```
+
+**查看所有支持的action**
+
+```shell
+$ profiler actions
+```
+
+**查看版本**
+
+```shell
+[arthas@40481]$ profiler version
+```
+>>>>>>> branch 'master' of https://github.com/zczhao/doc-workspace.git
 
 # 5、火焰图
 
