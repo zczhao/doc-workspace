@@ -365,8 +365,8 @@ yum -y install curl-devel expat-devel openssl-devel zlib-devel
 ## 2、Git官网下载Git最新版tar包，解压并安装
 
 ```shell
-tar -zxvf git-v2.23.0.tar.gz
-cd git-2.23.0/
+tar -zxvf git-v2.24.0.tar.gz
+cd git-2.24.0/
 make configure
 ./configure --prefix=/usr/local/git
 make
