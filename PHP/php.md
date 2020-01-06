@@ -443,10 +443,10 @@ http://www.zhicheng.com/abc.php?username=zhicheng 上面是一个URL(统一资�
 ?>
 ```
 一个变量名，对应了一个数据值。如下图：
-![](./images/1479090182488980.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/1479090182488980.png)
 
 而加上&（and 符后），把变量指向同一个存值空间了，如下图：
-![](./images/1479090195337097.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/1479090195337097.png)
 
 # 流程控制
 
@@ -486,7 +486,7 @@ if（判断语句1）{
 
 把上面的代码用流程图的形式表示清楚就如下图了：
 
-![](./images/2015-08-08_55c5966bd7af5.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/2015-08-08_55c5966bd7af5.png)
 
 ## 3、if语句多种嵌套
 
@@ -506,7 +506,7 @@ if (判断1) {
 }
 ```
 用流程图来表示如下：
-![](./images/2015-08-08_55c5a2ff40df7.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/2015-08-08_55c5a2ff40df7.png)
 
 ## 4、switch
 
@@ -526,7 +526,8 @@ switch (变量) {    //字符串，整型
 ```
 
 用流程图来表示的话结果就如下图所示：
-![](./images/1476683539964325.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/1476683539964325.png
+)
 
 ```php
 <?php
@@ -542,10 +543,11 @@ switch (变量) {    //字符串，整型
 
 ## 5、while
 while循环补一段专门的代码逻辑图：
-![](./images/1476683702132927.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/1476683702132927.png
+)
 
 用while循环实现下图效果：
-![](./images/2015-08-08_55c5b00fcc714.png)
+![](https://raw.githubusercontent.com/zczhao/picBed/master/2015-08-08_55c5b00fcc714.png)
 
 ```php
 <?php
