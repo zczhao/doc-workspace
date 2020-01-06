@@ -11,6 +11,17 @@
 </dependency>
 ```
 
+## 2、测试
+
+```java
+public class TestApplication {
+	@Test
+	public void myFirstTest() {
+		System.out.println("myFirstTest...");
+	}
+}
+```
+
 
 
 # Junit 5
@@ -36,5 +47,22 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+```
+
+## 2、测试类
+
+```java
+@RunWith(JUnitPlatform.class)
+public class TestApplication {
+  
+	/**
+	 * JUnit 5不再需要手动将测试类与测试方法为public，包可见的访问级别就足够了。
+	 */
+    @Test
+    @DisplayName("My First Test")
+    void myFirstTest() {
+      	System.out.println("myFirstTest...");
+    }
+}
 ```
 
