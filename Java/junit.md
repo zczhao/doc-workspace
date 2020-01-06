@@ -49,7 +49,7 @@ public class TestApplication {
 	</dependencies>
 ```
 
-## 2、测试类
+## 2、测试
 
 ```java
 @RunWith(JUnitPlatform.class)
