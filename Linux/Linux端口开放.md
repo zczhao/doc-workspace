@@ -62,7 +62,7 @@
 ## 3、全放行
 
 ```shell
-[root@localhost ~]# systemctl stop firewall
+[root@localhost ~]# systemctl stop firewalld
 ```
 
 ## 4、firewall命令

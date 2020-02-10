@@ -111,7 +111,7 @@ https://docs.docker.com/install/linux/docker-ce/centos/
 
 ```
 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/
-# 本次下载的包为：docker-ce-19.03.4-3.el7.x86_64.rpm
+# 本次下载的包为：docker-ce-19.03.5-3.el7.x86_64.rpm
 ```
 
 ### 4.3、删除老版本docker
@@ -152,7 +152,7 @@ yum remove docker \
 添加docker源
 
 ```shell
-[root@localhost ~]# yum update
+[root@localhost ~]# yum -y update
 [root@localhost ~]# yum -y install yum-utils 
 [root@localhost ~]# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 ```
@@ -160,9 +160,9 @@ yum remove docker \
 ### 4.5、安装
 
 ```shell
-# docker安装包名为：docker-ce-19.03.4-3.el7.x86_64.rpm
+# docker安装包名为：docker-ce-19.03.5-3.el7.x86_64.rpm
 # 安装包的存储目录为： /root
-[root@localhost ~]# yum install -y /root/docker-ce-19.03.4-3.el7.x86_64.rpm
+[root@localhost ~]# yum install -y /root/docker-ce-19.03.5-3.el7.x86_64.rpm
 ```
 
 ### 4.6、检查是否安装成功
