@@ -722,3 +722,129 @@ application-port=8081
 [root@localhost ~]# cat /usr/local/sonatype-work/nexus3/admin.password
 ```
 
+# CentOS7.x ShowDoc安装
+
+## 1、从官网下载
+
+```shell
+https://github.com/star7th/showdoc
+```
+
+## 2、上传到CentOS服务器
+
+```shell
+[root@localhost ~]# tar -zxvf showdoc-2.6.3.tar.gz
+```
+
+## 3、开始安装
+
+```shell
+# 前提先安装好Docker
+[root@localhost ~]# cd showdoc
+[root@localhost ~]# docker build -t showdoc ./
+# 果想在不同端口启动，请修改4999为其它端口
+[root@localhost ~]# docker run -d --name showdoc -p 4999:80 showdoc 
+```
+
+## 4、访问ShowDoc
+
+```shell
+# 在浏览器输入下面地址，注意ip
+http://192.168.132.132:4999/install/
+```
+
+# CentOS7.x MySql安装
+
+## 1、官网下载linux版本
+
+```shell
+https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.29-linux-glibc2.12-x86_64.tar.gz
+```
+
+## 2、上传到服务并解压
+
+```shell
+[root@localhost ~]# tar -zxvf mysql-5.7.29-linux-glibc2.12-x86_64.tar.gz
+```
+
+## 3、安装 
+
+```shell
+# 安装依赖
+[root@localhost ~]# yum install -y libaio
+
+[root@localhost ~]# mv mysql-5.7.29-linux-glibc2.12-x86_64 /usr/local/mysql
+[root@localhost ~]# ll /usr/local/mysql/
+总用量 288
+drwxr-xr-x.  2 root root    4096 2月  28 18:06 bin
+drwxr-xr-x.  2 root root      55 2月  28 18:06 docs
+drwxr-xr-x.  3 root root    4096 2月  28 18:06 include
+drwxr-xr-x.  5 root root     230 2月  28 18:06 lib
+-rw-r--r--.  1 7161 31415 276202 12月 18 20:59 LICENSE
+drwxr-xr-x.  4 root root      30 2月  28 18:06 man
+-rw-r--r--.  1 7161 31415    587 12月 18 20:59 README
+drwxr-xr-x. 28 root root    4096 2月  28 18:06 share
+drwxr-xr-x.  2 root root      90 2月  28 18:06 support-files
+
+[root@localhost ~]# cd /usr/local/mysql/
+# 创建数据仓库目录
+[root@localhost mysql]# mkdir -p data/mysql
+
+# 新建mysql用户、组及目录
+[root@localhost mysql]# groupadd mysql
+[root@localhost mysql]# useradd -r -s /sbin/nologin -g mysql mysql -d /usr/local/mysql/
+
+# 改变目录属有者
+[root@localhost mysql]# chown -R mysql .
+[root@localhost mysql]# chgrp -R mysql .
+
+# 配置参数
+[root@localhost mysql]#  bin/mysqld --initialize --user=mysql --basedir=/usr/local/mysql/ --datadir=/usr/local/mysql/data/mysql/
+# 此处需要注意记录生成的临时密码
+
+# 使用脚本工具生成密钥文件
+[root@localhost mysql]# bin/mysql_ssl_rsa_setup  --datadir=/usr/local/mysql/data/mysql/
+
+# 修改系统配置文件
+[root@localhost mysql]# cd support-files/
+[root@localhost support-files]# ls
+magic  mysqld_multi.server  mysql-log-rotate  mysql.server
+[root@localhost support-files]# cp mysql.server /etc/init.d/mysql
+
+# 修改以下内容
+[root@localhost mysql]# vi /etc/my.cnf
+[mysqld]
+init_connect='SET collation_connection = utf8_unicode_ci'
+init_connect='SET NAMES utf8'
+character-set-server=utf8
+port=3306
+datadir=/usr/local/mysql/data/mysql
+skip-grant-tables
+
+[root@localhost mysql]# /etc/init.d/mysql start
+Starting MySQL.Logging to '/usr/local/mysql/data/mysql/localhost.localdomain.err'.
+ SUCCESS!
+```
+
+## 4、启动
+
+```shell
+[root@localhost mysql]# ln -s /usr/local/mysql/bin/mysql /usr/bin
+[root@localhost mysql]# service mysql stop
+[root@localhost mysql]# service mysql start
+[root@localhost mysql]# mysql -hlocalhost -uroot -p
+Enter password: 临时密码
+# 刷新权限
+> flush privileges;
+# 修改密码
+> set password for root@localhost=password('123456');
+# 设置root账户的host地址（修改可以远程连接）
+> grant all privileges on *.* to 'root'@'%' identified by 'root';
+# 刷新权限
+> flush privileges;
+
+# 开放3306端口
+[root@localhost ~]# firewall-cmd --zone=public --add-port=3306/tcp --permanent
+[root@localhost ~]# firewall-cmd --reload
+```
+

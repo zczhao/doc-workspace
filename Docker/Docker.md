@@ -111,7 +111,7 @@ https://docs.docker.com/install/linux/docker-ce/centos/
 
 ```
 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/
-# 本次下载的包为：docker-ce-19.03.5-3.el7.x86_64.rpm
+# 本次下载的包为：docker-ce-19.03.6-3.el7.x86_64.rpm
 ```
 
 ### 4.3、删除老版本docker
@@ -134,6 +134,7 @@ yum remove docker \
  在 Centos7 中使用阿里云的yum源 
 
 ```shell
+[root@localhost ~]# yum -y install wget
 # 1、备份原来的yum源
 [root@localhost ~]# mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 
@@ -160,9 +161,12 @@ yum remove docker \
 ### 4.5、安装
 
 ```shell
-# docker安装包名为：docker-ce-19.03.5-3.el7.x86_64.rpm
+# docker安装包名为：docker-ce-19.03.6-3.el7.x86_64.rpm
 # 安装包的存储目录为： /root
-[root@localhost ~]# yum install -y /root/docker-ce-19.03.5-3.el7.x86_64.rpm
+[root@localhost ~]# yum install -y /root/docker-ce-19.03.6-3.el7.x86_64.rpm
+# 可能中间会安装一些其他包耗时比较长，可使用以下解决办法，直接下载
+# https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.6-3.el7.x86_64.rpm
+# https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
 ```
 
 ### 4.6、检查是否安装成功
@@ -644,6 +648,9 @@ drwxr-x---. 2 root root  4096 Jun 29 06:25 anaconda-screenshots
 -rw-r--r--. 1 root root 28250 Jun 29 06:24 install.log
 -rw-r--r--. 1 root root  7572 Jun 29 06:23 install.log.syslog
 -rw-------. 1 root root     0 Mar  6 01:34 yum.log
+
+# 从宿主机拷贝文件到容器/tmp/目录
+[root@localhost ~]# docker cp /root/yum.log cba311dd5e7e:/tmp
 ```
 
 # 六、镜像
@@ -2764,6 +2771,27 @@ http.cors.allow-origin: "*"
 #	unless-stopped，在容器退出时总是重启容器，但是不考虑在Docker守护进程启动时就已经停止了的容器
 [root@localhost ~]# docker run -di --name=rancher --restart=always -p 9090:8080 rancher/server
 # 访问地址：http://192.168.156.61:9090
+```
+
+## 10、[安装ShowDoc](https://www.showdoc.cc/page/65610)
+
+```shell
+[root@localhost ~]# docker pull registry.cn-shenzhen.aliyuncs.com/star7th/showdoc
+[root@localhost ~]# docker tag registry.cn-shenzhen.aliyuncs.com/star7th/showdoc:latest star7th/showdoc:latest 
+
+#新建存放showdoc数据的目录
+[root@localhost ~]# mkdir /showdoc_data
+[root@localhost ~]# mkdir /showdoc_data/html
+[root@localhost ~]# chmod  -R 777 /showdoc_data
+
+# 启动showdoc容器
+[root@localhost ~]# docker run -d --name showdoc -p 4999:80 -v /showdoc_data/html:/var/www/html/ star7th/showdoc
+# showdoc的数据都会存放在 /showdoc_data/html 
+# http://192.168.156.61:4999 访问showdoc 
+# 账号/密码 showdoc/123456
+
+# 自动生成API：https://www.showdoc.cc/page/741656402509783
+# 自动生成数据字典：https://segmentfault.com/a/1190000014539318
 ```
 
 
