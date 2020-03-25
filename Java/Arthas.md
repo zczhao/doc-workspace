@@ -384,6 +384,8 @@ $ ognl '@zzc.arthas.Arthas@hashSet'
 查看静态变量 hashSet 大小
 
 ```shell
+$ getstatic zzc.arthas.Arthas hashSet "size()"
+
 $ ognl '@zzc.arthas.Arthas@hashSet.size()'
 ```
 
