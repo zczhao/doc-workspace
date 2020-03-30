@@ -106,6 +106,10 @@ Email地址： fhqfndn@gmail.com
 
 #### 1、状态查看操作
 
+
+
+
+
 ​	git status
 
 ​	查看工作区、暂存区状态
@@ -203,6 +207,11 @@ Email地址： fhqfndn@gmail.com
 ​	删除操作已经提交到本地库：指针位置指向历史记录
 
 ​	删除操作尚未提交到本地库：指针位置使用 HEAD
+
+```shell
+# 强制拉取并覆盖本地代码
+$ git reset --hard [指针位置]
+```
 
 #### 8、比较文件差异
 
@@ -577,6 +586,14 @@ git push [别名] [分支名]
 
 ![](./images/TIM截图20190529225527.png)
 
+```shell
+# 强制提交本地分支覆盖远程分支
+$ git push origin 分支名 --force
+
+# eg：强制覆盖远程master
+# git push  orgin master --force
+```
+
 ## 5、克隆
 
 git clone [远程地址]
@@ -924,6 +941,7 @@ $ pwd
 $ cd project1
 $ ls
 project-info.txt
+# 添加子模块
 $ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib1.git libs/lib1
 $ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib2.git libs/lib2
 $ ls
@@ -974,6 +992,7 @@ $ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib1.git lib
 $ git submodule add /cygdrive/c/workspace/git-workspace/submd/repos/lib2.git libs/lib2
 $ ls
 libs/ project-info.txt
+# 初始化子仓库本地配置文件
 $ git submodule init
 $ git status
 位于分支 master
@@ -1004,6 +1023,7 @@ $ git submodule
 
 # 检出project1-b的submodules
 $ git submodule init
+# 同步子模块的数据
 $ git submodule update
 # 上面两个命令(git submodule init & update)可以简化
 # 可以查看：.git/config文件的内容，最下面有submodule的注册信息
@@ -1128,9 +1148,16 @@ $ git submodule update
 $ pwd
 /cygdrive/c/workspace/git-workspace/submd/ws/project2
 $ cd libs/lib1
+$ git checkout master
 $ echo "lib1 readme contents" > README
 $ git add README
 $ git commit -m "add file README"
+$ git push
+
+# 如果一开始忘记checkout到master并且有commit，则可以采用如下方法
+$ git reflog # 查看commit hash id 假设id是12345
+$ git checkout master
+$ git cherry-pick 12345
 $ git push
 
 # 需要在project2中再更新lib1的commit id
