@@ -1595,6 +1595,13 @@ find命令也支持逻辑运算符选项，其中-a代表逻辑与运算，也�
 
 "-ok"选项和"-exec"选项的作用基本一致，区别在于："-exec"的命令2会直接处理，而不询问，"-ok"的命令2在处理前会先询问用户是否这样处理，在得到确认命令后，才会执行。
 
+```shell
+# 保留/data/logs/applogs/目录下最近3天的*.log文件，其他*.log文件删除
+[root@localhost ~]# find /data/logs/applogs/ -maxdepth 1 -amin +4320 -type f -name "*.log.*" -exec rm -f {} \;
+```
+
+
+
 #### 5、grep 命令
 
 grep 的作用是在文件中提取和匹配符合条件的字符串行，命令格式如下：

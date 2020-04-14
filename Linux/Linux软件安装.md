@@ -1,16 +1,16 @@
 # Linux JDK安装配置
 
-## 1、上传安装压缩包 jdk-8u231-linux-x64.tar.gz，并解至 /usr/local 目录
+## 1、上传安装压缩包 jdk-8u241-linux-x64.tar.gz，并解至 /usr/local 目录
 
 ```shell
-[root@localhost ~]# tar -zxvf jdk-8u231-linux-x64.tar.gz -C /usr/local
+[root@localhost ~]# tar -zxvf jdk-8u241-linux-x64.tar.gz -C /usr/local
 ```
 
 ## 2、配置环境变量
 
 ```shell
 [root@localhost ~]# vim /etc/profile
-export JAVA_HOME=/usr/local/jdk1.8.0_231
+export JAVA_HOME=/usr/local/jdk1.8.0_241
 export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 ```
@@ -846,5 +846,214 @@ Enter password: 临时密码
 # 开放3306端口
 [root@localhost ~]# firewall-cmd --zone=public --add-port=3306/tcp --permanent
 [root@localhost ~]# firewall-cmd --reload
+```
+
+# CentOS7.x Prometheus安装
+
+## 1、[官网下载linux版本](https://prometheus.io/download/)
+
+```shell
+https://prometheus.io/download/
+```
+
+## 2、把下载的安装包文件上传到服务
+
+```shell
+当前版本：prometheus-2.17.1.linux-amd64.tar.gz
+```
+
+## 3、配置
+
+```shell
+# 添加用户 prometheus
+[root@localhost ~]# useradd --no-create-home --shell /bin/false 
+
+# 创建必要的目录
+[root@localhost ~]# mkdir /etc/prometheus
+[root@localhost ~]# mkdir /var/lib/prometheus
+
+# 改变目录权限
+[root@localhost ~]# chown prometheus:prometheus /etc/prometheus
+[root@localhost ~]# chown prometheus:prometheus /var/lib/prometheus
+
+# 移动到下载Prometheus的目录，解压Prometheus
+[root@localhost ~]# tar -zxvf prometheus-2.17.1.linux-amd64.tar.gz
+[root@localhost ~]# cd prometheus-2.17.1.linux-amd64
+# 将“prometheus”和“promtool”二进制文件从“prometheus-2.17.1.linux-amd64”文件夹复制到“/usr/local/bin”
+[root@localhost prometheus-2.17.1.linux-amd64]# cp prometheus /usr/local/bin/
+[root@localhost prometheus-2.17.1.linux-amd64]# cp promtool /usr/local/bin/
+# 更改prometheus/promtool属主
+[root@localhost prometheus-2.17.1.linux-amd64]# chown prometheus:prometheus /usr/local/bin/prometheus
+[root@localhost prometheus-2.17.1.linux-amd64]# chown prometheus:prometheus /usr/local/bin/promtool
+
+# 将“consoles”和“console_libraries”目录从“prometheus-2.17.1.linux-amd64”复制到“/etc/prometheus文件夹”
+[root@localhost prometheus-2.17.1.linux-amd64]# cp -r consoles /etc/prometheus
+[root@localhost prometheus-2.17.1.linux-amd64]# cp -r console_libraries /etc/prometheus
+# 将所有权更改为Prometheus用户
+[root@localhost prometheus-2.17.1.linux-amd64]# chown -R prometheus:prometheus /etc/prometheus/consoles
+[root@localhost prometheus-2.17.1.linux-amd64]# chown -R prometheus:prometheus /etc/prometheus/console_libraries
+
+# 添加和修改Prometheus配置文件
+[root@localhost ~]# vim /etc/prometheus/prometheus.yml
+# 将以下配置添加到该文件中
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'prometheus_master'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+# 更改文件的所有权
+[root@localhost ~]# chown prometheus:prometheus /etc/prometheus/prometheus.yml
+
+# 配置Prometheus service
+[root@localhost ~]# vim /etc/systemd/system/prometheus.service
+# 将以下内容复制到该文件
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+--config.file /etc/prometheus/prometheus.yml \
+--storage.tsdb.path /var/lib/prometheus/ \
+--web.console.templates=/etc/prometheus/consoles \
+--web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+
+# 重新加载systemd服务&启动
+[root@localhost ~]# systemctl daemon-reload
+# 启动
+[root@localhost ~]# systemctl start prometheus
+# 查看状态
+[root@localhost ~]# systemctl status prometheus
+
+# 如果需要，添加防火墙规则
+[root@localhost ~]# firewall-cmd --zone=public --add-port=9090/tcp --permanent
+[root@localhost ~]# systemctl reload firewalld
+
+# 访问Prometheus Web界面
+http://Server-IP:9090/graph
+```
+
+## 4、使用Prometheus监控Linux服务器
+
+### 4.1、下载[node_exporter](https://prometheus.io/download/)并上传到需要监控的服务器
+
+```shell
+node_exporter-0.18.1.linux-amd64.tar.gz
+```
+
+### 4.2、解压node_exporter并进行相关配置
+
+```shell
+# 解压node_exporter并进行相关配置
+[root@localhost ~]# tar -zxvf node_exporter-0.18.1.linux-amd64.tar.gz
+# 为node_exporter创建用户
+[root@localhost ~]# useradd -rs /bin/false nodeusr
+# 移动二进制文件
+[root@localhost ~]# mv node_exporter-0.18.1.linux-amd64/node_exporter /usr/local/bin/
+# 为节点导出器创建服务文件
+[root@localhost ~]# vi /etc/systemd/system/node_exporter.service
+# 将以下内容添加到该文件中
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+User=nodeusr
+Group=nodeusr
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+
+# 重新加载系统守护程序
+[root@localhost ~]# systemctl daemon-reload
+[root@localhost ~]# systemctl start node_exporter
+[root@localhost ~]# systemctl enable node_exporter
+
+# 如果有需要，添加防火墙规则
+[root@localhost ~]# firewall-cmd --zone=public --add-port=9100/tcp --permanent
+[root@localhost ~]# systemctl restart firewalld
+
+# 查看指标浏览节点导出程序URL
+http://IP-Address:9100/metrics
+
+# 在Prometheus Server上添加已配置的节点导出程序Target
+[root@localhost ~]# vi /etc/prometheus/prometheus.yml
+# 在scrape配置下添加以下配置
+ - job_name: 'node_exporter_centos'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['192.168.156.61:9100']
+      
+# 重启Prometheus服务
+[root@localhost ~]# systemctl restart prometheus
+
+# 登录Prometheus服务器Web界面，并检查目标
+http://Prometheus-Server-IP:9090/targets
+```
+
+# CentOS7.x Grafana安装
+
+## 1、官网下载[Grafana](https://grafana.com/grafana/download)并上传服务器
+
+```shell
+grafana-6.7.2.linux-amd64.tar.gz
+```
+
+## 2、安装
+
+```shell
+# 解压
+[root@localhost ~]# tar -zxvf grafana-6.7.2.linux-amd64.tar.gz
+
+# 启动grafana
+[root@localhost ~]# cd grafana-6.7.2/bin
+[root@localhost bin]# nohup ./grafana-server &
+
+# 访问grafana 用户名和密码默认都是admin
+http://Server-IP:3000/login
+```
+
+## 3、JMX监控
+
+```shell
+# Prometheus 监控Java JAR 方式启动的实例状态
+# 下载地址
+https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/
+[root@localhost ~]# cat << EOF >  config.yml
+---
+rules:
+- pattern: ".*"
+EOF
+[root@localhost ~]# java -javaagent:/root/jmx_prometheus_javaagent-0.12.0.jar=30502:/root/config.yml -jar app.jar
+
+# 配置Prometheus
+[root@localhost ~]# vi /etc/prometheus/prometheus.yml
+# 在scrape配置下添加以下配置
+  - job_name: 'jmx'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['192.168.156.61:30502']
+      
+# 重启Prometheus服务
+[root@localhost ~]# systemctl restart prometheus
+
+# 重新启动grafana
+[root@localhost bin]# nohup ./grafana-server &
+
+# 添加dashboards 点击Create -> Import 输入dashboards的id
+https://grafana.com/grafana/dashboards/3066
 ```
 

@@ -285,6 +285,19 @@ $ git reset --hard [指针位置]
 
 ![](./images/TIM截图20190528230709.png)
 
+#### 6、删除分支
+
+```shell
+# 本地删除远程不存在的分支
+$ git fetch —prune
+# 显示所有分支
+$ git branch -a
+# 删除本地分支
+$ git branch -d branch_name
+# 删除远程分支
+$ git push origin --delete branch_name
+```
+
 ## 2、案例实现
 
 ### 2.1、本地库初始化
@@ -820,6 +833,8 @@ $ find tensquare-*/target -exec rm -rf {} \;
 # 查看所有标签
 $ git tag
 # 查看远程标签
+$ git show-ref --tag
+# 查看远程标签
 $ git tag -r
 # 创建标签
 $ git tag name
@@ -827,6 +842,10 @@ $ git tag name
 $ git tag -a name -m "comment"
 # 删除标签
 $ git tag -d name
+# 批量删除远程标签（注意最后有个空格）
+$ git tag -l | awk '/b[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$/ {print $1}' | xargs -n 1 git push --delete origin 
+# 批量删除本地beta标签（注意最后有个空格）
+$ git tag -l | awk '/b[0-9]{1,}.[0-9]{1,}.[0-9]{1,}$/ {print $1}' | xargs -n 1 git tag -d 
 # 标签发布到远程
 $ git push origin name
 # 删除远程仓库标签
